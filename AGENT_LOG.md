@@ -54,4 +54,4 @@
 - How to run/test:
   - Run `.\mvnw.cmd test` to execute all integration and REST mock tests.
   - Run `.\mvnw.cmd spring-boot:run` to launch the server on port 8080.
-- Git commit hash: (will be populated upon commit)
+- Git commit hash: 8eda6ef (tag: phase-2-done)
