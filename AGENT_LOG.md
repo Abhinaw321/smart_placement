@@ -18,4 +18,4 @@
   - Establishing a production-grade architectural blueprint ensures that the eligibility engine is extensible via the Strategy Pattern without modifying core services, database integrity is safeguarded via foreign keys and composite unique constraints, and the user understands core Java/Spring Boot concepts before implementation.
 - How to run/test:
   - Review documentation file `docs/PHASE1_ARCHITECTURE.md` and verify Mermaid diagrams and relational schema tables.
-- Git commit hash: (will be populated upon commit)
+- Git commit hash: 625a2e8 (tag: phase-1-done)
