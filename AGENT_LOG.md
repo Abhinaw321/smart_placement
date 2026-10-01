@@ -19,3 +19,39 @@
 - How to run/test:
   - Review documentation file `docs/PHASE1_ARCHITECTURE.md` and verify Mermaid diagrams and relational schema tables.
 - Git commit hash: 625a2e8 (tag: phase-1-done)
+
+## [Phase 2] Spring Boot Setup, Maven Dependencies & Base Architecture — 2026-10-01 22:23 IST
+- What was done:
+  - Initialized Spring Boot 3.3.5 project with official Maven Wrapper (`mvnw`, `mvnw.cmd`, `.mvn/`).
+  - Configured `pom.xml` with dependencies: `spring-boot-starter-web`, `spring-boot-starter-data-jpa`, `spring-boot-starter-security`, `spring-boot-starter-validation`, `mysql-connector-j`, `jjwt` (0.12.6), `springdoc-openapi` (2.6.0), and `h2` test dependency.
+  - Configured `src/main/resources/application.yml` with MySQL datasource (with environment variable overrides), HikariCP connection pool parameters, Hibernate DDL auto-update, SQL formatting, JWT parameters, upload directory, and logging levels.
+  - Implemented base architecture: `SmartPlacementApplication` (`@SpringBootApplication`, `@EnableJpaAuditing`), `BaseEntity` (`@MappedSuperclass`, `@CreatedDate`, `@LastModifiedDate`), `ApiResponse<T>` generic envelope, `PagedResponse<T>` pagination wrapper, and `ApiErrorResponse` error envelope.
+  - Built centralized exception hierarchy (`ApiException`, `ResourceNotFoundException`, `BadRequestException`) and `@RestControllerAdvice` (`GlobalExceptionHandler`).
+  - Added CORS configuration (`WebMvcConfig`) for React frontend and base Spring Security filter chain (`SecurityConfig`) with `BCryptPasswordEncoder`.
+  - Implemented `HealthController` (`GET /api/v1/health`) and verified context loading and REST endpoint via `MockMvc` tests (2/2 passing).
+- Files created/modified:
+  - `.mvn/wrapper/*`, `mvnw`, `mvnw.cmd` (Created)
+  - `pom.xml` (Created)
+  - `src/main/resources/application.yml` (Created)
+  - `src/main/java/com/smartplacement/SmartPlacementApplication.java` (Created)
+  - `src/main/java/com/smartplacement/entity/BaseEntity.java` (Created)
+  - `src/main/java/com/smartplacement/dto/common/ApiResponse.java` (Created)
+  - `src/main/java/com/smartplacement/dto/common/PagedResponse.java` (Created)
+  - `src/main/java/com/smartplacement/dto/common/ApiErrorResponse.java` (Created)
+  - `src/main/java/com/smartplacement/exception/ApiException.java` (Created)
+  - `src/main/java/com/smartplacement/exception/ResourceNotFoundException.java` (Created)
+  - `src/main/java/com/smartplacement/exception/BadRequestException.java` (Created)
+  - `src/main/java/com/smartplacement/exception/GlobalExceptionHandler.java` (Created)
+  - `src/main/java/com/smartplacement/config/WebMvcConfig.java` (Created)
+  - `src/main/java/com/smartplacement/config/SecurityConfig.java` (Created)
+  - `src/main/java/com/smartplacement/controller/HealthController.java` (Created)
+  - `src/test/resources/application.yml` (Created)
+  - `src/test/java/com/smartplacement/SmartPlacementApplicationTests.java` (Created)
+  - `src/test/java/com/smartplacement/controller/HealthControllerTest.java` (Created)
+  - `AGENT_LOG.md` (Appended)
+- Why (design decision):
+  - Establishing a production-style layered base architecture with a unified response envelope (`ApiResponse<T>`) and global exception handling guarantees API consistency across all future modules. Adding an H2 in-memory test configuration ensures hermetic, reliable test suites while production remains strictly on MySQL.
+- How to run/test:
+  - Run `.\mvnw.cmd test` to execute all integration and REST mock tests.
+  - Run `.\mvnw.cmd spring-boot:run` to launch the server on port 8080.
+- Git commit hash: (will be populated upon commit)
