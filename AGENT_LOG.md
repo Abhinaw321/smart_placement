@@ -107,3 +107,49 @@
   - Access `http://localhost:8080/swagger-ui/index.html` to test login and registration with interactive JWT authorization.
 - Git commit hash: ba6b31c (tag: phase-3-done)
 
+## [Phase 4] Student Profile Management & Secure Resume Storage — 2026-10-02 15:06 IST
+- What was done:
+  - Designed and created persistent domain entities: `Student`, `StudentSkill`, `StudentProject`, and `StudentCertification` with JPA cascade mappings (`CascadeType.ALL`, `orphanRemoval = true`), database indexes, and bidirectional lifecycle helper methods.
+  - Implemented Spring Data JPA repositories: `StudentRepository` (with custom multi-criteria dynamic search JPQL query for TPO search), `StudentSkillRepository`, `StudentProjectRepository`, and `StudentCertificationRepository`.
+  - Built secure filesystem resume storage service: `FileStorageService` and `LocalFileStorageServiceImpl` featuring path traversal defense (`..` rejection), PDF MIME and extension validation, 5MB file-size guard, and unique UUID-based file generation (`student_{id}_{shortUuid}.pdf`).
+  - Implemented complete DTO suite: `StudentProfileResponseDto`, `StudentPersonalInfoUpdateDto`, `StudentAcademicUpdateDto`, `StudentSkillDto`, `StudentProjectDto`, and `StudentCertificationDto`.
+  - Built `StudentService` and `StudentServiceImpl` implementing personal info updates, academic record updates, skill/project/certification CRUD, resume upload, authorized inline streaming and download, and profile completion evaluation.
+  - Updated `AuthServiceImpl.registerStudent` to automatically create and link the persistent `Student` profile record to the created `User` upon registration.
+  - Implemented `StudentController` exposing endpoints: `GET /api/v1/students/me`, `PUT /api/v1/students/me`, `PUT /api/v1/students/me/academic`, `POST /api/v1/students/me/resume`, `GET /api/v1/students/me/resume`, skill/project/certification endpoints, paginated search `GET /api/v1/students`, and candidate detail `GET /api/v1/students/{id}`.
+  - Built unit tests in `FileStorageServiceTest` and integration tests in `StudentControllerIntegrationTest` covering profile retrieval, personal and academic updates, portfolio management, resume upload/download, TPO pagination search, and authorization denial checks (total 31/31 passing tests).
+- Files created/modified:
+  - `src/main/java/com/smartplacement/entity/SkillProficiency.java` (Created)
+  - `src/main/java/com/smartplacement/entity/Student.java` (Created)
+  - `src/main/java/com/smartplacement/entity/StudentSkill.java` (Created)
+  - `src/main/java/com/smartplacement/entity/StudentProject.java` (Created)
+  - `src/main/java/com/smartplacement/entity/StudentCertification.java` (Created)
+  - `src/main/java/com/smartplacement/repository/StudentRepository.java` (Created)
+  - `src/main/java/com/smartplacement/repository/StudentSkillRepository.java` (Created)
+  - `src/main/java/com/smartplacement/repository/StudentProjectRepository.java` (Created)
+  - `src/main/java/com/smartplacement/repository/StudentCertificationRepository.java` (Created)
+  - `src/main/java/com/smartplacement/exception/FileStorageException.java` (Created)
+  - `src/main/java/com/smartplacement/exception/ApiException.java` (Modified)
+  - `src/main/java/com/smartplacement/service/FileStorageService.java` (Created)
+  - `src/main/java/com/smartplacement/service/impl/LocalFileStorageServiceImpl.java` (Created)
+  - `src/main/java/com/smartplacement/dto/student/StudentProfileResponseDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/student/StudentPersonalInfoUpdateDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/student/StudentAcademicUpdateDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/student/StudentSkillDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/student/StudentProjectDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/student/StudentCertificationDto.java` (Created)
+  - `src/main/java/com/smartplacement/service/StudentService.java` (Created)
+  - `src/main/java/com/smartplacement/service/impl/StudentServiceImpl.java` (Created)
+  - `src/main/java/com/smartplacement/service/impl/AuthServiceImpl.java` (Modified)
+  - `src/main/java/com/smartplacement/controller/StudentController.java` (Created)
+  - `src/test/java/com/smartplacement/service/FileStorageServiceTest.java` (Created)
+  - `src/test/java/com/smartplacement/controller/StudentControllerIntegrationTest.java` (Created)
+  - `src/test/java/com/smartplacement/controller/AuthControllerIntegrationTest.java` (Modified)
+  - `AGENT_LOG.md` (Appended)
+- Why (design decision):
+  - Storing uploaded resumes outside public web roots with UUID-sanitized filenames completely defeats directory traversal and script injection vulnerabilities. Managing student skills, projects, and certifications via JPA composite associations (`orphanRemoval = true`) ensures data consistency without orphaned records in child tables. Automatic student profile instantiation during auth registration guarantees 1-to-1 parity between security credentials and candidate records.
+- How to run/test:
+  - Run `.\mvnw.cmd test` to execute all 31 tests.
+  - Run `.\mvnw.cmd spring-boot:run` to launch the server on port 8080.
+- Git commit hash: [Pending commit] (tag: phase-4-done)
+
+

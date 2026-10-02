@@ -35,16 +35,19 @@ public class AuthServiceImpl implements AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
+    private final com.smartplacement.repository.StudentRepository studentRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
 
     public AuthServiceImpl(
             AuthenticationManager authenticationManager,
             UserRepository userRepository,
+            com.smartplacement.repository.StudentRepository studentRepository,
             PasswordEncoder passwordEncoder,
             JwtTokenProvider tokenProvider) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
+        this.studentRepository = studentRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenProvider = tokenProvider;
     }
@@ -83,13 +86,18 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public AuthResponseDto registerStudent(StudentRegisterRequestDto request) {
         String normalizedEmail = request.getEmail().trim().toLowerCase();
-        log.info("Registering student with email: {}", normalizedEmail);
+        String normalizedRoll = request.getRollNumber().trim();
+        log.info("Registering student with email: {} and roll number: {}", normalizedEmail, normalizedRoll);
 
         if (userRepository.existsByEmail(normalizedEmail)) {
             throw new BadRequestException("An account is already registered with email: " + normalizedEmail);
         }
 
-        // Create base User account with encoded password and ROLE_STUDENT
+        if (studentRepository.existsByRollNumber(normalizedRoll)) {
+            throw new BadRequestException("Roll number is already registered: " + normalizedRoll);
+        }
+
+        // 1. Create base User account with encoded password and ROLE_STUDENT
         User user = new User(
                 normalizedEmail,
                 passwordEncoder.encode(request.getPassword()),
@@ -98,7 +106,23 @@ public class AuthServiceImpl implements AuthService {
         );
 
         User savedUser = userRepository.save(user);
-        log.info("Student user created with ID: {}", savedUser.getId());
+        log.info("Student user credentials created with ID: {}", savedUser.getId());
+
+        // 2. Automatically create linked Student profile record
+        com.smartplacement.entity.Student student = new com.smartplacement.entity.Student(
+                savedUser,
+                normalizedRoll,
+                request.getFirstName().trim(),
+                request.getLastName().trim(),
+                request.getPhone().trim(),
+                request.getGender(),
+                request.getBranch().trim().toUpperCase(),
+                request.getGraduationYear(),
+                request.getCgpa()
+        );
+
+        com.smartplacement.entity.Student savedStudent = studentRepository.save(student);
+        log.info("Student domain profile created with ID: {}", savedStudent.getId());
 
         String jwt = tokenProvider.generateTokenForUser(savedUser);
 

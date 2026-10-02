@@ -33,10 +33,26 @@ class AuthControllerIntegrationTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private com.smartplacement.repository.StudentRepository studentRepository;
+
+    @Autowired
+    private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+
     @BeforeEach
     void cleanUp() {
-        // Clean up users created in previous tests, keeping or re-seeding admin
+        // Clean up students first to satisfy foreign key constraints, then users
+        studentRepository.deleteAll();
         userRepository.deleteAll();
+
+        // Reseed default admin account
+        com.smartplacement.entity.User admin = new com.smartplacement.entity.User(
+                "admin@smartplacement.com",
+                passwordEncoder.encode("Admin@123"),
+                com.smartplacement.entity.Role.ROLE_TPO_ADMIN,
+                com.smartplacement.entity.UserStatus.ACTIVE
+        );
+        userRepository.save(admin);
     }
 
     @Test
