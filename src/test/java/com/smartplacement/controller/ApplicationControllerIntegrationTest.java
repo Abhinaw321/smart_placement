@@ -24,6 +24,7 @@ import com.smartplacement.entity.UserStatus;
 import com.smartplacement.repository.ApplicationRepository;
 import com.smartplacement.repository.CompanyRepository;
 import com.smartplacement.repository.EligibilityCriteriaRepository;
+import com.smartplacement.repository.InterviewRepository;
 import com.smartplacement.repository.JobRepository;
 import com.smartplacement.repository.RecruiterRepository;
 import com.smartplacement.repository.StudentCertificationRepository;
@@ -69,6 +70,9 @@ class ApplicationControllerIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Autowired
+    private InterviewRepository interviewRepository;
+
+    @Autowired
     private ApplicationRepository applicationRepository;
 
     @Autowired
@@ -103,6 +107,7 @@ class ApplicationControllerIntegrationTest {
 
     @BeforeEach
     void cleanDatabase() {
+        interviewRepository.deleteAll();
         applicationRepository.deleteAll();
         jobRepository.deleteAll();
         eligibilityCriteriaRepository.deleteAll();

@@ -295,7 +295,55 @@
 - How to run/test:
   - Run `.\mvnw.cmd test` to execute all 68 unit and integration tests.
   - Run `.\mvnw.cmd spring-boot:run` to launch the server on port 8080.
-- Git commit hash: 47fc2c8 (tag: phase-7-done)
+- Git commit hash: 9a0e29f (tag: phase-7-done)
+
+## [Phase 8] Assessment & Interview Scheduling Module — 2026-10-02 16:18 IST
+- What was done:
+  - Designed and created persistent domain entity `Interview` with `roundNumber`, `roundName`, `interviewType` (`ONLINE_MEET`, `OFFLINE_CAMPUS`, `TELEPHONIC`), `scheduledAt`, `meetingLinkOrVenue`, `interviewerName`, `interviewerEmail`, `status` (`SCHEDULED`, `COMPLETED`, `CANCELLED`, `RESCHEDULED`, `NO_SHOW`), `result` (`PENDING`, `CLEARED`, `REJECTED`, `ON_HOLD`), `feedback` (text), `rating` (1-5), and `conductedAt`.
+  - Implemented Spring Data JPA repository `InterviewRepository` featuring fetch join queries (`findByIdWithDetails`, `findStudentInterviewsWithDetails`, `findJobInterviewsWithDetails`) and round ordering.
+  - Implemented comprehensive DTO suite: `ScheduleInterviewRequestDto` (with validation constraints: `@Future`, `@NotBlank`, etc.), `InterviewResultDto` (rating 1-5, result, feedback, advance status, next round name), and `InterviewResponseDto` (complete candidate, company, and round metadata).
+  - Built `InterviewService` and `InterviewServiceImpl` with:
+    - Recruiter/TPO-only scheduling permissions with company-level isolation.
+    - Automatic application status transitions (advancing `APPLIED` to `SHORTLISTED` upon first schedule).
+    - Interview evaluation recording: updates round result, rating, detailed feedback, and synchronizes application lifecycle (e.g. advancing to `TECHNICAL_INTERVIEW` or setting `REJECTED` with audit trail).
+    - Candidate interview schedule view (`/my`), application rounds history, job-level drive schedule, and cancellation logic.
+  - Built REST controller `InterviewController` exposing `/api/v1/interviews` endpoints:
+    - `POST /schedule` (Schedule candidate round)
+    - `PUT /{id}/result` (Record evaluator feedback & rating)
+    - `GET /my` (Student interview schedule)
+    - `GET /application/{applicationId}` (Application rounds history)
+    - `GET /job/{jobId}` (Job drive scheduled slots)
+    - `GET /{id}` (Interview round details)
+    - `PUT /{id}/cancel` (Interview cancellation)
+  - Authored comprehensive integration test suite `InterviewControllerIntegrationTest` (6 tests) validating scheduling, student schedule view, CLEARED round advancement, REJECTED application termination, role-based authorization denial, and round cancellation.
+  - Updated all existing integration test suites (`ApplicationControllerIntegrationTest`, `JobControllerIntegrationTest`, `StudentControllerIntegrationTest`, `CompanyControllerIntegrationTest`, `AuthControllerIntegrationTest`) with `InterviewRepository` cascade deletion for total database isolation.
+  - All 74 tests in the project passing with 100% green status.
+- Files created/modified:
+  - `src/main/java/com/smartplacement/entity/InterviewType.java` (Created)
+  - `src/main/java/com/smartplacement/entity/InterviewStatus.java` (Created)
+  - `src/main/java/com/smartplacement/entity/RoundResult.java` (Created)
+  - `src/main/java/com/smartplacement/entity/Interview.java` (Created)
+  - `src/main/java/com/smartplacement/repository/InterviewRepository.java` (Created)
+  - `src/main/java/com/smartplacement/dto/interview/ScheduleInterviewRequestDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/interview/InterviewResultDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/interview/InterviewResponseDto.java` (Created)
+  - `src/main/java/com/smartplacement/service/InterviewService.java` (Created)
+  - `src/main/java/com/smartplacement/service/impl/InterviewServiceImpl.java` (Created)
+  - `src/main/java/com/smartplacement/controller/InterviewController.java` (Created)
+  - `src/test/java/com/smartplacement/controller/InterviewControllerIntegrationTest.java` (Created)
+  - `src/test/java/com/smartplacement/controller/ApplicationControllerIntegrationTest.java` (Modified)
+  - `src/test/java/com/smartplacement/controller/JobControllerIntegrationTest.java` (Modified)
+  - `src/test/java/com/smartplacement/controller/StudentControllerIntegrationTest.java` (Modified)
+  - `src/test/java/com/smartplacement/controller/CompanyControllerIntegrationTest.java` (Modified)
+  - `src/test/java/com/smartplacement/controller/AuthControllerIntegrationTest.java` (Modified)
+  - `AGENT_LOG.md` (Appended)
+- Why (design decision):
+  - Structuring rounds as distinct entity rows under an application allows multi-stage recruitment drives (OA -> Technical 1 -> Technical 2 -> HR) where each round stores distinct interviewers, time slots, ratings, and textual feedback. Decoupling the evaluation outcome (`CLEARED`, `REJECTED`, `ON_HOLD`) from the application lifecycle state machine while enabling automated state progression preserves clear auditability for both campus hiring panels and candidates.
+- How to run/test:
+  - Run `.\mvnw.cmd test` to execute all 74 unit and integration tests.
+  - Run `.\mvnw.cmd spring-boot:run` to launch the server on port 8080.
+- Git commit hash: 4619780 (tag: phase-8-done)
+
 
 
 
