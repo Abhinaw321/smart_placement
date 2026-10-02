@@ -86,6 +86,15 @@ class JobControllerIntegrationTest {
     private RecruiterRepository recruiterRepository;
 
     @Autowired
+    private com.smartplacement.repository.AuditLogRepository auditLogRepository;
+
+    @Autowired
+    private com.smartplacement.repository.NotificationRepository notificationRepository;
+
+    @Autowired
+    private com.smartplacement.repository.JobOfferRepository jobOfferRepository;
+
+    @Autowired
     private com.smartplacement.repository.InterviewRepository interviewRepository;
 
     @Autowired
@@ -102,6 +111,9 @@ class JobControllerIntegrationTest {
 
     @BeforeEach
     void cleanDatabase() {
+        auditLogRepository.deleteAll();
+        notificationRepository.deleteAll();
+        jobOfferRepository.deleteAll();
         interviewRepository.deleteAll();
         applicationRepository.deleteAll();
         jobRepository.deleteAll();

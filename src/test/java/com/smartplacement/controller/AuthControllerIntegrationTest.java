@@ -43,6 +43,15 @@ class AuthControllerIntegrationTest {
     private com.smartplacement.repository.CompanyRepository companyRepository;
 
     @Autowired
+    private com.smartplacement.repository.AuditLogRepository auditLogRepository;
+
+    @Autowired
+    private com.smartplacement.repository.NotificationRepository notificationRepository;
+
+    @Autowired
+    private com.smartplacement.repository.JobOfferRepository jobOfferRepository;
+
+    @Autowired
     private com.smartplacement.repository.InterviewRepository interviewRepository;
 
     @Autowired
@@ -57,6 +66,9 @@ class AuthControllerIntegrationTest {
     @BeforeEach
     void cleanUp() {
         // Clean up child tables first to satisfy foreign key constraints, then parent tables
+        auditLogRepository.deleteAll();
+        notificationRepository.deleteAll();
+        jobOfferRepository.deleteAll();
         interviewRepository.deleteAll();
         applicationRepository.deleteAll();
         jobRepository.deleteAll();

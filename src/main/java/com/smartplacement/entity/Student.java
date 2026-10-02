@@ -101,6 +101,9 @@ public class Student extends BaseEntity {
     @Column(name = "profile_completed", nullable = false)
     private Boolean profileCompleted = false;
 
+    @Column(name = "is_placed", nullable = false)
+    private Boolean isPlaced = false;
+
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StudentSkill> skills = new ArrayList<>();
 
@@ -326,6 +329,14 @@ public class Student extends BaseEntity {
 
     public void setProfileCompleted(Boolean profileCompleted) {
         this.profileCompleted = profileCompleted;
+    }
+
+    public Boolean getIsPlaced() {
+        return isPlaced;
+    }
+
+    public void setIsPlaced(Boolean isPlaced) {
+        this.isPlaced = isPlaced != null ? isPlaced : false;
     }
 
     public List<StudentSkill> getSkills() {

@@ -342,7 +342,67 @@
 - How to run/test:
   - Run `.\mvnw.cmd test` to execute all 74 unit and integration tests.
   - Run `.\mvnw.cmd spring-boot:run` to launch the server on port 8080.
-- Git commit hash: 4619780 (tag: phase-8-done)
+- Git commit hash: fd79b9b (tag: phase-8-done)
+
+## [Phase 9] Offers, Notifications & Audit Logs Module — 2026-10-02 17:50 IST
+- What was done:
+  - Designed and implemented `JobOffer` persistent domain entity with `application` (unique `@OneToOne`), `student` (`@ManyToOne`), `job` (`@ManyToOne`), `ctcLpa`, `designation`, `offerLetterUrl`, `issueDate`, `validUntil`, `joiningDate`, `status` (`OfferStatus`), `responseDate`, `studentRemarks`, and `notes`.
+  - Designed and implemented `OfferStatus` enum (`PENDING`, `ACCEPTED`, `DECLINED`, `REVOKED`) with terminal state detection.
+  - Added `isPlaced` attribute to `Student` entity and `StudentProfileResponseDto` for automated placement status locking upon offer acceptance.
+  - Implemented `Notification` entity and `NotificationType` enum (`JOB_ALERT`, `APPLICATION_UPDATE`, `INTERVIEW_SCHEDULED`, `OFFER_RECEIVED`, `OFFER_RESPONSE`, `GENERAL_ALERT`) with composite database index (`idx_notif_user_unread`).
+  - Implemented `AuditLog` entity for immutable administrative and regulatory compliance tracking.
+  - Created Spring Data JPA repositories: `JobOfferRepository` (with fetch joins for candidate, company, and job details), `NotificationRepository` (with unread count and bulk mark-as-read queries), and `AuditLogRepository` (with action and actor filtering).
+  - Built DTO suite: `OfferIssueRequestDto` (with validation constraints `@NotNull`, `@Min`, `@Future`), `OfferResponseRequestDto` (decision validation), `JobOfferResponseDto` (complete candidate and company metadata), `NotificationResponseDto`, and `AuditLogResponseDto`.
+  - Implemented `NotificationService` & `NotificationServiceImpl` managing notification creation, paginated inbox view, unread counts, and acknowledgement.
+  - Implemented `AuditLogService` & `AuditLogServiceImpl` providing isolated, independent transactions (`Propagation.REQUIRES_NEW`) to guarantee audit trail persistence regardless of outer transaction rollback.
+  - Implemented `JobOfferService` & `JobOfferServiceImpl` handling offer issuance, student response workflows (locking candidate placement status to `isPlaced = true` upon `ACCEPTED`), expiration guards, offer revocation, and event fanout to notifications and audit logs.
+  - Built REST controllers:
+    - `JobOfferController` (`/api/v1/offers`): `POST /issue`, `PUT /{id}/respond`, `PUT /{id}/revoke`, `GET /my`, `GET /job/{jobId}`, `GET /{id}`.
+    - `NotificationController` (`/api/v1/notifications`): `GET`, `GET /unread-count`, `PUT /{id}/read`, `PUT /read-all`.
+    - `AuditLogController` (`/api/v1/audit-logs`): `GET` (restricted to `ROLE_TPO_ADMIN`).
+  - Authored comprehensive integration test suite `JobOfferControllerIntegrationTest` (7 tests) covering offer issuance, student acceptance and placement locking, student decline, recruiter revocation, student inbox and unread counts, admin audit trail verification, and student authorization denial.
+  - Updated all integration test suites (`ApplicationControllerIntegrationTest`, `AuthControllerIntegrationTest`, `CompanyControllerIntegrationTest`, `InterviewControllerIntegrationTest`, `JobControllerIntegrationTest`, `StudentControllerIntegrationTest`) with cascade deletion for `AuditLogRepository`, `NotificationRepository`, and `JobOfferRepository` ensuring complete database isolation.
+  - All 81 tests across the entire test suite passing with 100% green status.
+- Files created/modified:
+  - `src/main/java/com/smartplacement/entity/OfferStatus.java` (Created)
+  - `src/main/java/com/smartplacement/entity/NotificationType.java` (Created)
+  - `src/main/java/com/smartplacement/entity/JobOffer.java` (Created)
+  - `src/main/java/com/smartplacement/entity/Notification.java` (Created)
+  - `src/main/java/com/smartplacement/entity/AuditLog.java` (Created)
+  - `src/main/java/com/smartplacement/entity/Student.java` (Modified)
+  - `src/main/java/com/smartplacement/dto/student/StudentProfileResponseDto.java` (Modified)
+  - `src/main/java/com/smartplacement/repository/JobOfferRepository.java` (Created)
+  - `src/main/java/com/smartplacement/repository/NotificationRepository.java` (Created)
+  - `src/main/java/com/smartplacement/repository/AuditLogRepository.java` (Created)
+  - `src/main/java/com/smartplacement/dto/offer/OfferIssueRequestDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/offer/OfferResponseRequestDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/offer/JobOfferResponseDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/notification/NotificationResponseDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/audit/AuditLogResponseDto.java` (Created)
+  - `src/main/java/com/smartplacement/service/NotificationService.java` (Created)
+  - `src/main/java/com/smartplacement/service/impl/NotificationServiceImpl.java` (Created)
+  - `src/main/java/com/smartplacement/service/AuditLogService.java` (Created)
+  - `src/main/java/com/smartplacement/service/impl/AuditLogServiceImpl.java` (Created)
+  - `src/main/java/com/smartplacement/service/JobOfferService.java` (Created)
+  - `src/main/java/com/smartplacement/service/impl/JobOfferServiceImpl.java` (Created)
+  - `src/main/java/com/smartplacement/controller/JobOfferController.java` (Created)
+  - `src/main/java/com/smartplacement/controller/NotificationController.java` (Created)
+  - `src/main/java/com/smartplacement/controller/AuditLogController.java` (Created)
+  - `src/test/java/com/smartplacement/controller/JobOfferControllerIntegrationTest.java` (Created)
+  - `src/test/java/com/smartplacement/controller/InterviewControllerIntegrationTest.java` (Modified)
+  - `src/test/java/com/smartplacement/controller/ApplicationControllerIntegrationTest.java` (Modified)
+  - `src/test/java/com/smartplacement/controller/JobControllerIntegrationTest.java` (Modified)
+  - `src/test/java/com/smartplacement/controller/StudentControllerIntegrationTest.java` (Modified)
+  - `src/test/java/com/smartplacement/controller/CompanyControllerIntegrationTest.java` (Modified)
+  - `src/test/java/com/smartplacement/controller/AuthControllerIntegrationTest.java` (Modified)
+  - `AGENT_LOG.md` (Appended)
+- Why (design decision):
+  - Emitting audit logs using `Propagation.REQUIRES_NEW` guarantees that compliance audit records are persisted in their own independent database transaction, preventing audit loss even if downstream application logic encounters exceptions. Enforcing placement locking (`student.isPlaced = true`) upon offer acceptance prevents double-placement scenarios violating institutional placement policies while providing real-time placement rate metrics.
+- How to run/test:
+  - Run `.\mvnw.cmd test` to execute all 81 unit and integration tests.
+  - Run `.\mvnw.cmd spring-boot:run` to launch the server on port 8080.
+- Git commit hash: 8a90c81 (tag: phase-9-done)
+
 
 
 

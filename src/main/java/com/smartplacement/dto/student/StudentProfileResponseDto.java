@@ -36,6 +36,7 @@ public class StudentProfileResponseDto {
     private String resumeFilename;
     private boolean hasResume;
     private Boolean profileCompleted;
+    private Boolean isPlaced;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -71,6 +72,7 @@ public class StudentProfileResponseDto {
         dto.setResumeFilename(student.getResumeFilename());
         dto.setHasResume(student.getResumeUrl() != null && !student.getResumeUrl().isBlank());
         dto.setProfileCompleted(student.getProfileCompleted());
+        dto.setIsPlaced(student.getIsPlaced());
         dto.setCreatedAt(student.getCreatedAt());
         dto.setUpdatedAt(student.getUpdatedAt());
 
@@ -317,5 +319,13 @@ public class StudentProfileResponseDto {
 
     public void setCertifications(List<StudentCertificationDto> certifications) {
         this.certifications = certifications;
+    }
+
+    public Boolean getIsPlaced() {
+        return isPlaced;
+    }
+
+    public void setIsPlaced(Boolean isPlaced) {
+        this.isPlaced = isPlaced;
     }
 }

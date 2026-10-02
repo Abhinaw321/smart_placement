@@ -70,6 +70,15 @@ class ApplicationControllerIntegrationTest {
     private ObjectMapper objectMapper;
 
     @Autowired
+    private com.smartplacement.repository.AuditLogRepository auditLogRepository;
+
+    @Autowired
+    private com.smartplacement.repository.NotificationRepository notificationRepository;
+
+    @Autowired
+    private com.smartplacement.repository.JobOfferRepository jobOfferRepository;
+
+    @Autowired
     private InterviewRepository interviewRepository;
 
     @Autowired
@@ -107,6 +116,9 @@ class ApplicationControllerIntegrationTest {
 
     @BeforeEach
     void cleanDatabase() {
+        auditLogRepository.deleteAll();
+        notificationRepository.deleteAll();
+        jobOfferRepository.deleteAll();
         interviewRepository.deleteAll();
         applicationRepository.deleteAll();
         jobRepository.deleteAll();
