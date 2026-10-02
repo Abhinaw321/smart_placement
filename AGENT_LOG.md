@@ -55,3 +55,55 @@
   - Run `.\mvnw.cmd test` to execute all integration and REST mock tests.
   - Run `.\mvnw.cmd spring-boot:run` to launch the server on port 8080.
 - Git commit hash: 8eda6ef (tag: phase-2-done)
+
+## [Phase 3] Security, JWT Authentication, RBAC & User Management — 2026-10-02 14:55 IST
+- What was done:
+  - Created RBAC enums: `Role` (`ROLE_STUDENT`, `ROLE_RECRUITER`, `ROLE_TPO_ADMIN`) and `UserStatus` (`ACTIVE`, `INACTIVE`, `LOCKED`).
+  - Created `User` persistent entity extending `BaseEntity` with indexed unique email, BCrypt password hash, and enum-mapped role and status.
+  - Implemented `UserRepository` with Spring Data derived queries (`findByEmail`, `existsByEmail`, `existsByRole`).
+  - Implemented `UserPrincipal` adapter implementing Spring Security's `UserDetails` contract.
+  - Implemented `CustomUserDetailsService` implementing Spring Security's `UserDetailsService`.
+  - Built stateless JWT engine: `JwtTokenProvider` using modern JJWT 0.12.x APIs (HMAC-SHA256 signature, claim packing for userId and role, token validation with specific exception handling).
+  - Implemented `JwtAuthenticationFilter` extending `OncePerRequestFilter` to extract Bearer tokens, validate claims, and populate `SecurityContextHolder`.
+  - Implemented `JwtAuthenticationEntryPoint` (401 Unauthorized JSON envelope) and `CustomAccessDeniedHandler` (403 Forbidden JSON envelope).
+  - Configured `SecurityConfig` with BCryptPasswordEncoder, stateless session management, JWT filter chain integration, and protected route rules.
+  - Configured Swagger / OpenAPI with `OpenApiConfig` declaring the BearerAuth security scheme for testing authenticated endpoints in Swagger UI.
+  - Implemented authentication DTOs: `LoginRequestDto`, `StudentRegisterRequestDto`, `RecruiterRegisterRequestDto`, `AuthResponseDto`, and `UserSummaryDto`.
+  - Built `AuthService` and `AuthServiceImpl` for handling student registration, recruiter registration, credential authentication, and profile lookup.
+  - Built `DataInitializer` bootstrap runner to automatically seed default TPO Administrator (`admin@smartplacement.com` / `Admin@123`) if not present.
+  - Implemented `AuthController` exposing `/api/v1/auth/login`, `/api/v1/auth/student/register`, `/api/v1/auth/recruiter/register`, and `/api/v1/auth/me`.
+  - Built exhaustive test suite: unit tests for `JwtTokenProvider` and integration tests for `AuthController` (student/recruiter registration, duplicate prevention, validation errors, bad credentials, token generation, protected `/me` access, and RBAC method-level security enforcement with 15/15 tests passing).
+- Files created/modified:
+  - `src/main/java/com/smartplacement/entity/Role.java` (Created)
+  - `src/main/java/com/smartplacement/entity/UserStatus.java` (Created)
+  - `src/main/java/com/smartplacement/entity/User.java` (Created)
+  - `src/main/java/com/smartplacement/repository/UserRepository.java` (Created)
+  - `src/main/java/com/smartplacement/security/UserPrincipal.java` (Created)
+  - `src/main/java/com/smartplacement/security/CustomUserDetailsService.java` (Created)
+  - `src/main/java/com/smartplacement/security/jwt/JwtTokenProvider.java` (Created)
+  - `src/main/java/com/smartplacement/security/jwt/JwtAuthenticationFilter.java` (Created)
+  - `src/main/java/com/smartplacement/security/jwt/JwtAuthenticationEntryPoint.java` (Created)
+  - `src/main/java/com/smartplacement/security/jwt/CustomAccessDeniedHandler.java` (Created)
+  - `src/main/java/com/smartplacement/config/SecurityConfig.java` (Modified)
+  - `src/main/java/com/smartplacement/config/OpenApiConfig.java` (Created)
+  - `src/main/java/com/smartplacement/config/DataInitializer.java` (Created)
+  - `src/main/java/com/smartplacement/dto/auth/LoginRequestDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/auth/StudentRegisterRequestDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/auth/RecruiterRegisterRequestDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/auth/AuthResponseDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/auth/UserSummaryDto.java` (Created)
+  - `src/main/java/com/smartplacement/service/AuthService.java` (Created)
+  - `src/main/java/com/smartplacement/service/impl/AuthServiceImpl.java` (Created)
+  - `src/main/java/com/smartplacement/controller/AuthController.java` (Created)
+  - `src/test/java/com/smartplacement/security/jwt/JwtTokenProviderTest.java` (Created)
+  - `src/test/java/com/smartplacement/controller/TestSecurityController.java` (Created)
+  - `src/test/java/com/smartplacement/controller/AuthControllerIntegrationTest.java` (Created)
+  - `AGENT_LOG.md` (Appended)
+- Why (design decision):
+  - A stateless JWT architecture eliminates server-side session memory overhead and provides seamless authentication across React SPA clients. Isolating security exceptions (`JwtAuthenticationEntryPoint`, `CustomAccessDeniedHandler`) ensures the frontend always receives the identical, structured `ApiErrorResponse` envelope whether an error originates in the Spring filter chain or controller layer. Automatic admin seeding enables immediate local development and API verification.
+- How to run/test:
+  - Run `.\mvnw.cmd test` to execute all 15 tests.
+  - Run `.\mvnw.cmd spring-boot:run` to launch the backend on port 8080.
+  - Access `http://localhost:8080/swagger-ui/index.html` to test login and registration with interactive JWT authorization.
+- Git commit hash: [Pending commit] (tag: phase-3-done)
+
