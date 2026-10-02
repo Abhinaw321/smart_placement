@@ -1,92 +1,96 @@
 import React from 'react';
-import { Check } from 'lucide-react';
+
+const DEFAULT_STEPS = ['Applied', 'Shortlisted', 'Test', 'Interview', 'Offer'];
 
 export default function Stepper({
-  steps = [],
-  currentStepIndex = 0,
+  steps = DEFAULT_STEPS,
+  currentStep = 'Applied',
+  status = 'PENDING',
+  className = '',
   style = {},
-  ...props
 }) {
+  // Normalize current step index
+  const normalizedCurrent = (currentStep || '').toLowerCase();
+  let activeIndex = steps.findIndex(
+    (s) => s.toLowerCase() === normalizedCurrent || normalizedCurrent.includes(s.toLowerCase())
+  );
+  if (activeIndex === -1) {
+    if (normalizedCurrent.includes('offer') || normalizedCurrent.includes('accept') || status === 'OFFER_MADE') {
+      activeIndex = 4;
+    } else if (
+      normalizedCurrent.includes('interview') ||
+      normalizedCurrent.includes('technical') ||
+      normalizedCurrent.includes('round') ||
+      status === 'TECHNICAL_INTERVIEW' ||
+      status === 'INTERVIEW_SCHEDULED'
+    ) {
+      activeIndex = 3;
+    } else if (normalizedCurrent.includes('test') || normalizedCurrent.includes('assessment')) {
+      activeIndex = 2;
+    } else if (normalizedCurrent.includes('shortlist') || status === 'SHORTLISTED') {
+      activeIndex = 1;
+    } else {
+      activeIndex = 0;
+    }
+  }
+
+  const isRejected = status === 'REJECTED';
+
   return (
     <div
       style={{
         display: 'flex',
         alignItems: 'center',
-        width: '100%',
-        gap: '0.5rem',
+        gap: '0.4rem',
         ...style,
       }}
-      {...props}
+      className={className}
     >
       {steps.map((step, idx) => {
-        const isCompleted = idx < currentStepIndex;
-        const isCurrent = idx === currentStepIndex;
-        const isUpcoming = idx > currentStepIndex;
+        const isCompleted = idx < activeIndex;
+        const isCurrent = idx === activeIndex;
+
+        let dotColor = 'var(--border)';
+        let textColor = 'var(--text-subtle)';
+
+        if (isCurrent) {
+          dotColor = isRejected ? 'var(--status-red-fg)' : 'var(--accent)';
+          textColor = isRejected ? 'var(--status-red-fg)' : 'var(--text)';
+        } else if (isCompleted) {
+          dotColor = 'var(--text-muted)';
+          textColor = 'var(--text-muted)';
+        }
 
         return (
-          <React.Fragment key={step.id || step.label || idx}>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.45rem',
-                flexShrink: 0,
-              }}
-            >
+          <React.Fragment key={step}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
               <div
                 style={{
-                  width: '20px',
-                  height: '20px',
+                  width: '6px',
+                  height: '6px',
                   borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '0.65rem',
-                  fontWeight: 700,
-                  transition: 'all 0.15s ease',
-                  background: isCompleted
-                    ? 'var(--accent)'
-                    : isCurrent
-                    ? 'var(--surface-elevated)'
-                    : 'var(--surface)',
-                  color: isCompleted
-                    ? 'var(--accent-fg)'
-                    : isCurrent
-                    ? 'var(--accent)'
-                    : 'var(--text-subtle)',
-                  border: isCurrent
-                    ? '1.5px solid var(--accent)'
-                    : isCompleted
-                    ? 'none'
-                    : '1px solid var(--border)',
+                  background: dotColor,
+                  transition: 'background 0.15s ease',
                 }}
-              >
-                {isCompleted ? <Check size={11} strokeWidth={3} /> : idx + 1}
-              </div>
-
+              />
               <span
                 style={{
-                  fontSize: '0.78rem',
-                  fontWeight: isCurrent ? 600 : 500,
-                  color: isCurrent
-                    ? 'var(--text)'
-                    : isCompleted
-                    ? 'var(--text-muted)'
-                    : 'var(--text-subtle)',
-                  letterSpacing: '-0.01em',
+                  fontSize: '0.72rem',
+                  fontWeight: isCurrent ? 600 : 400,
+                  color: textColor,
                 }}
               >
-                {step.label}
+                {step}
               </span>
             </div>
 
             {idx < steps.length - 1 && (
               <div
                 style={{
-                  flex: 1,
+                  width: '14px',
                   height: '1px',
-                  background: isCompleted ? 'var(--accent-border)' : 'var(--border)',
-                  minWidth: '16px',
+                  background: isCompleted ? 'var(--text-muted)' : 'var(--border)',
+                  margin: '0 0.1rem',
                 }}
               />
             )}

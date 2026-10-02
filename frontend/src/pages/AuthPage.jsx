@@ -220,14 +220,13 @@ export default function AuthPage() {
               >
                 <span
                   style={{
-                    fontSize: '0.7rem',
+                    fontSize: '0.74rem',
                     fontWeight: 600,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.05em',
+                    letterSpacing: '-0.01em',
                     color: 'var(--accent)',
                   }}
                 >
-                  1-Click Demo Accounts
+                  1-Click demo accounts
                 </span>
                 <Badge variant="accent" style={{ fontSize: '0.65rem', padding: '0.1rem 0.4rem' }}>
                   Live MySQL

@@ -641,3 +641,37 @@
   - `AGENT_LOG.md` (Appended)
 - Git commit hash: 153ff2a (branch: experiment/ui-redesign)
 
+## [UI Redesign - Phase 2] Student Overview & Navigation Redesign — 2026-10-02 23:41 IST
+- What was done:
+  - Checked out new experiment branch: `experiment/ui-redesign-v2`.
+  - Fixed page edge bug: wrapped application in `max-w-7xl mx-auto px-6 py-8` container.
+  - Replaced top tabs with fixed Left Sidebar (240px) using Lucide icons: Overview, Drives, Applications, Interviews, Offers, Profile & Resume. Active item has surface background and lime accent left indicator.
+  - Added inside top bar (`PageHeader`): Page title on left (Space Grotesk), notification bell with unread dot and user avatar menu on right.
+  - Fixed stat cards: responsive grid (`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4`), compact ~115px height, neutral surface `#141416`, bold white numbers, muted Lucide icons.
+  - Completely redesigned Student Overview page:
+    - Greeting row: "Hey Alex" (large Space Grotesk) with dynamic subline ("2 drives match you. 1 interview coming up.") and circular profile strength completion ring (100% in lime accent).
+    - Stat grid (4 cards): Applied, Shortlisted, Interviews, Offers.
+    - Two columns layout (`lg:grid-cols-3 gap-6`):
+      - Left column (`lg:col-span-2`): "Your pipeline" card with company logo initial in rounded square, role & company, horizontal stepper (`Applied > Shortlisted > Test > Interview > Offer`) with current stage highlighted in accent `#C6FF3D`, and pill-shaped status badge. Empty state: "No applications yet. Go apply, future SDE."
+      - Right column (`lg:col-span-1`): "Next up" card with clean date block (`OCT 4`), round name, company, time, and "Join meeting" secondary button. Below it, "Offers" card with microcopy "You got an offer. Go call your mom.", company, package in LPA (`28.5 LPA`), and Accept/Decline buttons.
+    - "Drives for you" section: grid of job cards with company initial, role, package, eligibility pill badges ("Eligible" soft green, "Not eligible" soft red with reason), and disabled apply state when ineligible or already applied.
+  - Verified UI via headless Chrome DevTools protocol screenshots: confirmed padding, grid responsiveness, single accent color, and zero emojis.
+- Files created/modified:
+  - `frontend/src/index.css` (Modified)
+  - `frontend/src/App.jsx` (Modified)
+  - `frontend/src/pages/AuthPage.jsx` (Modified)
+  - `frontend/src/pages/StudentPortal.jsx` (Modified)
+  - `frontend/src/components/NotificationDropdown.jsx` (Modified)
+  - `frontend/src/components/ui/Button.jsx` (Modified)
+  - `frontend/src/components/ui/Card.jsx` (Modified)
+  - `frontend/src/components/ui/Badge.jsx` (Modified)
+  - `frontend/src/components/ui/Input.jsx` (Modified)
+  - `frontend/src/components/ui/StatCard.jsx` (Modified)
+  - `frontend/src/components/ui/EmptyState.jsx` (Modified)
+  - `frontend/src/components/ui/Stepper.jsx` (Modified)
+  - `frontend/src/components/ui/Sidebar.jsx` (Created)
+  - `frontend/src/components/ui/PageHeader.jsx` (Created)
+  - `AGENT_LOG.md` (Appended)
+- Git commit hash: pending commit (branch: experiment/ui-redesign-v2)
+
+

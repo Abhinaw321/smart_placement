@@ -1,17 +1,18 @@
 import React from 'react';
+import Card from './Card';
 import Button from './Button';
 
 export default function EmptyState({
   icon: Icon,
-  headline,
+  title,
   description,
   actionLabel,
   onAction,
+  className = '',
   style = {},
-  ...props
 }) {
   return (
-    <div
+    <Card
       style={{
         display: 'flex',
         flexDirection: 'column',
@@ -19,12 +20,9 @@ export default function EmptyState({
         justifyContent: 'center',
         textAlign: 'center',
         padding: '3rem 1.5rem',
-        borderRadius: 'var(--radius-lg)',
-        border: '1px dashed var(--border)',
-        background: 'rgba(20, 20, 22, 0.4)',
         ...style,
       }}
-      {...props}
+      className={className}
     >
       {Icon && (
         <div
@@ -41,43 +39,42 @@ export default function EmptyState({
             marginBottom: '1rem',
           }}
         >
-          <Icon size={20} strokeWidth={2} />
+          <Icon size={20} strokeWidth={1.8} />
         </div>
       )}
 
-      {headline && (
+      {title && (
         <h4
           style={{
-            fontSize: '1rem',
+            fontSize: '0.95rem',
             fontWeight: 600,
             color: 'var(--text)',
             marginBottom: '0.35rem',
-            letterSpacing: '-0.02em',
           }}
         >
-          {headline}
+          {title}
         </h4>
       )}
 
       {description && (
         <p
           style={{
-            fontSize: '0.85rem',
+            fontSize: '0.82rem',
             color: 'var(--text-muted)',
-            maxWidth: '360px',
-            margin: '0 auto 1.25rem',
+            maxWidth: '320px',
             lineHeight: 1.45,
+            marginBottom: actionLabel ? '1.25rem' : 0,
           }}
         >
           {description}
         </p>
       )}
 
-      {actionLabel && onAction && (
+      {actionLabel && (
         <Button variant="secondary" size="sm" onClick={onAction}>
           {actionLabel}
         </Button>
       )}
-    </div>
+    </Card>
   );
 }

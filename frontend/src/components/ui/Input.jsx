@@ -18,11 +18,10 @@ export default function Input({
         <label
           htmlFor={inputId}
           style={{
-            fontSize: '0.75rem',
-            fontWeight: 600,
+            fontSize: '0.8rem',
+            fontWeight: 500,
             color: 'var(--text-muted)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.04em',
+            letterSpacing: '-0.01em',
           }}
         >
           {label}

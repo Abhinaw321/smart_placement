@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { notificationApi } from '../services/api';
-import { Bell, CheckCheck, Clock } from 'lucide-react';
+import { CheckCheck } from 'lucide-react';
 
 export default function NotificationDropdown({ onClose }) {
   const [notifications, setNotifications] = useState([]);
@@ -11,7 +11,7 @@ export default function NotificationDropdown({ onClose }) {
       const res = await notificationApi.getAll('page=0&size=6');
       setNotifications(res.content || []);
     } catch (err) {
-      console.error('Failed to load notifications', err);
+      // Silent fail
     } finally {
       setLoading(false);
     }
@@ -46,13 +46,12 @@ export default function NotificationDropdown({ onClose }) {
     <div
       style={{
         position: 'absolute',
-        top: '110%',
+        top: '115%',
         right: 0,
-        width: '360px',
-        background: '#0f172a',
-        border: '1px solid rgba(255, 255, 255, 0.15)',
-        borderRadius: '12px',
-        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.6)',
+        width: '340px',
+        background: 'var(--surface)',
+        border: '1px solid var(--border)',
+        borderRadius: 'var(--radius-xl)',
         zIndex: 100,
         overflow: 'hidden',
       }}
@@ -60,14 +59,14 @@ export default function NotificationDropdown({ onClose }) {
       <div
         style={{
           padding: '0.85rem 1rem',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+          borderBottom: '1px solid var(--border)',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          background: 'rgba(0, 0, 0, 0.2)',
+          background: 'var(--surface-elevated)',
         }}
       >
-        <span style={{ fontWeight: 600, fontSize: '0.9rem', color: '#fff' }}>
+        <span style={{ fontWeight: 600, fontSize: '0.85rem', color: 'var(--text)' }}>
           Notifications
         </span>
         <button
@@ -75,26 +74,27 @@ export default function NotificationDropdown({ onClose }) {
           style={{
             background: 'none',
             border: 'none',
-            color: '#818cf8',
-            fontSize: '0.75rem',
+            color: 'var(--text-muted)',
+            fontSize: '0.74rem',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             gap: '0.25rem',
+            transition: 'color 0.12s',
           }}
         >
-          <CheckCheck size={14} /> Mark all read
+          <CheckCheck size={13} /> Mark all read
         </button>
       </div>
 
-      <div style={{ maxHeight: '340px', overflowY: 'auto' }}>
+      <div style={{ maxHeight: '320px', overflowY: 'auto' }}>
         {loading ? (
-          <div style={{ padding: '1.5rem', textAlign: 'center', color: '#94a3b8' }}>
-            Loading alerts...
+          <div style={{ padding: '1.5rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.8rem' }}>
+            Loading updates...
           </div>
         ) : notifications.length === 0 ? (
-          <div style={{ padding: '2rem 1rem', textAlign: 'center', color: '#64748b', fontSize: '0.85rem' }}>
-            No notifications yet
+          <div style={{ padding: '2rem 1rem', textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.82rem' }}>
+            All caught up. No notifications.
           </div>
         ) : (
           notifications.map(n => (
@@ -103,21 +103,20 @@ export default function NotificationDropdown({ onClose }) {
               onClick={(e) => handleMarkAsRead(n.id, e)}
               style={{
                 padding: '0.75rem 1rem',
-                borderBottom: '1px solid rgba(255, 255, 255, 0.04)',
-                background: n.isRead ? 'transparent' : 'rgba(99, 102, 241, 0.08)',
+                borderBottom: '1px solid var(--border)',
+                background: n.isRead ? 'transparent' : 'rgba(198, 255, 61, 0.04)',
                 cursor: 'pointer',
-                transition: 'background 0.2s',
               }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.25rem' }}>
-                <span style={{ fontWeight: 600, fontSize: '0.85rem', color: n.isRead ? '#cbd5e1' : '#fff' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.2rem' }}>
+                <span style={{ fontWeight: 600, fontSize: '0.82rem', color: n.isRead ? 'var(--text-muted)' : 'var(--text)' }}>
                   {n.title}
                 </span>
                 {!n.isRead && (
-                  <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#6366f1', display: 'inline-block' }} />
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--accent)', display: 'inline-block', flexShrink: 0, marginTop: '4px' }} />
                 )}
               </div>
-              <p style={{ fontSize: '0.8rem', color: '#94a3b8', margin: 0, lineHeight: 1.4 }}>
+              <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', margin: 0, lineHeight: 1.4 }}>
                 {n.message}
               </p>
             </div>
