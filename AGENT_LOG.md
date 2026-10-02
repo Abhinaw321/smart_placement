@@ -567,4 +567,4 @@
   - Run all tests: `.\mvnw.cmd test` (87 tests passing).
   - Launch backend: `.\mvnw.cmd spring-boot:run` (Swagger at `http://localhost:8080/swagger-ui.html`).
   - Launch frontend: `cd frontend && npm.cmd run dev` (SPA at `http://localhost:3000`).
-- Git commit hash: pending (tag: phase-13-done)
+- Git commit hash: a7a70fc (tag: phase-13-done)
