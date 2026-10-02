@@ -446,11 +446,90 @@
   - Run `.\mvnw.cmd spring-boot:run` to launch the server on port 8080.
 - Git commit hash: 3d553cc (tag: phase-10-done)
 
+## [Phase 11] Modern React Frontend Architecture & Student Portal — 2026-10-02 18:02 IST
+- What was done:
+  - Initialized high-performance Vite React 18 SPA in `frontend/` with `lucide-react` icons and `canvas-confetti`.
+  - Configured `frontend/vite.config.js` with reverse proxy mapping `/api` requests to Spring Boot backend (`http://localhost:8080`) on port 3000.
+  - Designed and implemented a modern Vanilla CSS glassmorphic design system in `frontend/src/index.css`:
+    - Curated HSL dark palette tokens (rich midnight canvas, deep slate surfaces, indigo/violet/emerald accents).
+    - Modern typography with Google Fonts `Outfit` (headings) and `Plus Jakarta Sans` (body).
+    - Glassmorphism utilities (`.glass-card`, `.modal-backdrop`, `.modal-content`), color badges, responsive data tables, form inputs, button states, and micro-animations.
+  - Implemented centralized HTTP API client `frontend/src/services/api.js`:
+    - Automatic JWT token injection via Authorization header.
+    - Global 401 Unauthorized token cleanup and event dispatching.
+    - Full endpoint mapping: `authApi`, `studentApi`, `companyApi`, `jobApi`, `applicationApi`, `interviewApi`, `offerApi`, `notificationApi`, and `analyticsApi`.
+    - Native support for RFC 4180 CSV binary blob downloads.
+  - Implemented authentication context `frontend/src/context/AuthContext.jsx`:
+    - Persistent LocalStorage token & user state.
+    - Role helpers (`isStudent`, `isRecruiter`, `isAdmin`).
+    - Login and logout event listeners.
+  - Implemented UI components:
+    - `Navbar.jsx`: Glassmorphic header with user avatar, role badge, notification badge, and logout.
+    - `NotificationDropdown.jsx`: Real-time notification drawer with unread counter, filter, and mark-all-as-read.
+    - `StatCard.jsx`: Metric display cards with custom color themes (indigo, emerald, amber, cyan).
+    - `EligibilityModal.jsx`: Interactive modal evaluating student qualifications across all 7 strategy criteria in real-time, detailing pass/fail status with explicit rejection reasons, and 1-click apply trigger.
+  - Implemented `AuthPage.jsx`:
+    - Tabbed authentication portal (Sign In, Student Registration, Recruiter Registration).
+    - 1-Click Demo Account Autofill buttons for Student, Recruiter, and TPO Admin.
+  - Implemented comprehensive `StudentPortal.jsx`:
+    - Dynamic KPI dashboard (profile completeness, applications count, offers, eligible drives).
+    - Profile management (CGPA, 10th/12th marks, backlogs, technical skill tags).
+    - Secure resume upload with file drag/drop and direct download link.
+    - Published job drives catalog with live rule evaluation button and 1-click application.
+    - Candidate application pipeline tracker with stage badges (`APPLIED`, `SHORTLISTED`, `OFFERED`, `REJECTED`).
+    - Assessment & interview schedule calendar with meeting URLs and interviewer details.
+    - Formal offer review with celebratory confetti animation on acceptance.
+- Files created/modified:
+  - `frontend/package.json` (Created)
+  - `frontend/vite.config.js` (Created)
+  - `frontend/index.html` (Created)
+  - `frontend/src/index.css` (Created)
+  - `frontend/src/services/api.js` (Created)
+  - `frontend/src/context/AuthContext.jsx` (Created)
+  - `frontend/src/components/Navbar.jsx` (Created)
+  - `frontend/src/components/NotificationDropdown.jsx` (Created)
+  - `frontend/src/components/StatCard.jsx` (Created)
+  - `frontend/src/components/EligibilityModal.jsx` (Created)
+  - `frontend/src/pages/AuthPage.jsx` (Created)
+  - `frontend/src/pages/StudentPortal.jsx` (Created)
+  - `AGENT_LOG.md` (Appended)
+- Why (design decision):
+  - Integrating real-time eligibility evaluation on the frontend allows candidates to instantly see where they stand against institutional cutoffs with actionable feedback before submitting applications. A glassmorphism dark-mode UI with tailored color scales elevates student engagement and provides a state-of-the-art campus recruitment experience.
+- How to run/test:
+  - Inside `frontend/`: `npm.cmd run dev` to launch dev server at `http://localhost:3000`.
+  - Production build: `npm.cmd run build`.
+- Git commit hash: pending (tag: phase-11-done)
 
-
-
-
-
-
-
-
+## [Phase 12] Recruiter Portal, TPO Executive Portal & System Integration — 2026-10-02 18:12 IST
+- What was done:
+  - Designed and implemented `frontend/src/pages/RecruiterPortal.jsx`:
+    - High-level recruitment KPIs (active drives, applicants received, interviews conducted, offers extended).
+    - Drive Creation Form with interactive Eligibility Criteria Builder (CGPA, backlogs, 10th/12th, branch selector, graduation batches, technical skills).
+    - My Job Drives catalog with "Eligible Talent Pool" scanner displaying matching students across campus before receiving applications.
+    - Candidate Pipeline management table with drive and status filters, candidate academic snapshot, stage progression modal, schedule interview modal, and issue formal offer modal.
+    - Interview scheduler and evaluator with score recording (0-100) and candidate notification.
+    - Placement offer tracker with offer revocation capabilities.
+  - Designed and implemented `frontend/src/pages/TpoAdminPortal.jsx`:
+    - Executive institutional dashboard (overall placement %, total placed, salary tiers: Super Dream, Dream, Regular Plus, Standard Base).
+    - Branch-wise placement progress bars with real-time percentage and average CTC.
+    - Corporate Partner Manager with 1-click verification of unverified employer accounts.
+    - Campus-wide job opening overseer with multi-attribute search.
+    - Immutable security & compliance audit log viewer with action and actor search.
+    - 1-Click Institutional Placement Master Report CSV download with automatic browser file trigger (`campus_placements_master_report_YYYY-MM-DD.csv`).
+  - Assembled main application router in `frontend/src/App.jsx`:
+    - Global `AuthProvider` wrapper with smooth session loading state.
+    - Dynamic portal switching based on user role (`ROLE_STUDENT` -> `StudentPortal`, `ROLE_RECRUITER` -> `RecruiterPortal`, `ROLE_TPO_ADMIN` -> `TpoAdminPortal`).
+  - Verified end-to-end frontend production bundle compilation with `npm.cmd run build` (transformed 1899 modules in 1.88s with 0 errors).
+  - Verified backend compilation with `mvnw.cmd test-compile` (0 errors).
+- Files created/modified:
+  - `frontend/src/pages/RecruiterPortal.jsx` (Created)
+  - `frontend/src/pages/TpoAdminPortal.jsx` (Created)
+  - `frontend/src/App.jsx` (Modified)
+  - `AGENT_LOG.md` (Appended)
+- Why (design decision):
+  - Providing role-specific portals ensures strict separation of concerns while delivering targeted workflows: recruiters focus on pipeline velocity and applicant screening, while university placement officers oversee macro-level institutional metrics, partner verification, and statutory accreditation data exports.
+- How to run/test:
+  - Build frontend: `npm.cmd run build` inside `frontend/`.
+  - Start frontend dev server: `npm.cmd run dev` inside `frontend/`.
+  - Start backend server: `.\mvnw.cmd spring-boot:run` in project root.
+- Git commit hash: pending (tag: phase-12-done)
