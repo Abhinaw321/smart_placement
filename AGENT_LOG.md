@@ -105,5 +105,5 @@
   - Run `.\mvnw.cmd test` to execute all 15 tests.
   - Run `.\mvnw.cmd spring-boot:run` to launch the backend on port 8080.
   - Access `http://localhost:8080/swagger-ui/index.html` to test login and registration with interactive JWT authorization.
-- Git commit hash: [Pending commit] (tag: phase-3-done)
+- Git commit hash: ba6b31c (tag: phase-3-done)
 
