@@ -245,7 +245,58 @@
 - How to run/test:
   - Run `.\mvnw.cmd test` to execute all 58 unit and integration tests.
   - Run `.\mvnw.cmd spring-boot:run` to launch the server on port 8080.
-- Git commit hash: 932d0ce (tag: phase-6-done)
+- Git commit hash: 8660a52 (tag: phase-6-done)
+
+## [Phase 7] Application Lifecycle & Recruitment Workflow Management — 2026-10-02 16:08 IST
+- What was done:
+  - Designed and created domain entity `Application` (with `job`, `student`, `status`, `currentRound`, `resumeSnapshotUrl`, `rejectionReason`, `appliedAt`) with composite unique constraint `UNIQUE(job_id, student_id)` and database indexes (`idx_applications_job_status`, `idx_applications_student_id`).
+  - Created `ApplicationStatus` recruitment state machine enum with terminal state detection (`OFFER_ACCEPTED`, `OFFER_DECLINED`, `REJECTED`, `WITHDRAWN`).
+  - Implemented `IneligibleApplicationException` to surface granular criteria rejection lists.
+  - Implemented `ApplicationRepository` with high-performance fetch-join queries for candidate pipelines and student application histories.
+  - Created request and response DTOs: `ApplicationResponseDto`, `ApplicationStatusUpdateDto`, and `BatchApplicationStatusUpdateDto`.
+  - Built `ApplicationWorkflowService` and `ApplicationWorkflowServiceImpl` enforcing core placement invariants:
+    - Pre-application eligibility check via `EligibilityEngine.evaluate()` (blocks ineligible students with human-readable reasons).
+    - Mandatory uploaded resume validation on the student's profile before applying.
+    - Snapshotting resume URL at application submission time for immutable auditing.
+    - Application deadline expiration validation.
+    - Idempotent duplicate application prevention.
+    - State transition validation (preventing illegal transitions from terminal states).
+    - Student withdrawal guard (only allowed while still in `APPLIED` status).
+    - Recruiter candidate pipeline views and bulk candidate status transitions.
+  - Implemented REST controller `ApplicationController` (`/api/v1/applications`) with endpoints:
+    - `POST /api/v1/applications/jobs/{jobId}/apply` (Student application submission)
+    - `GET /api/v1/applications/my` (Student personal application tracking)
+    - `GET /api/v1/applications/jobs/{jobId}` (Recruiter/TPO candidate pipeline)
+    - `GET /api/v1/applications/{id}` (Detailed application view)
+    - `PUT /api/v1/applications/{id}/status` (Application status transition)
+    - `POST /api/v1/applications/batch-status` (Bulk status transition)
+    - `DELETE /api/v1/applications/{id}/withdraw` (Candidate application withdrawal)
+  - Authored comprehensive integration test suite `ApplicationControllerIntegrationTest` (10 tests) validating resume requirements, successful applications, eligibility rejections, duplicate blocking, student pipeline view, recruiter status transitions, batch updates, valid withdrawal, and invalid withdrawal of shortlisted candidates.
+  - All 68 tests across the system passing with 100% green status.
+- Files created/modified:
+  - `src/main/java/com/smartplacement/entity/ApplicationStatus.java` (Created)
+  - `src/main/java/com/smartplacement/entity/Application.java` (Created)
+  - `src/main/java/com/smartplacement/exception/IneligibleApplicationException.java` (Created)
+  - `src/main/java/com/smartplacement/repository/ApplicationRepository.java` (Created)
+  - `src/main/java/com/smartplacement/dto/application/ApplicationResponseDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/application/ApplicationStatusUpdateDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/application/BatchApplicationStatusUpdateDto.java` (Created)
+  - `src/main/java/com/smartplacement/service/ApplicationWorkflowService.java` (Created)
+  - `src/main/java/com/smartplacement/service/impl/ApplicationWorkflowServiceImpl.java` (Created)
+  - `src/main/java/com/smartplacement/controller/ApplicationController.java` (Created)
+  - `src/test/java/com/smartplacement/controller/ApplicationControllerIntegrationTest.java` (Created)
+  - `src/test/java/com/smartplacement/controller/JobControllerIntegrationTest.java` (Modified)
+  - `src/test/java/com/smartplacement/controller/StudentControllerIntegrationTest.java` (Modified)
+  - `src/test/java/com/smartplacement/controller/CompanyControllerIntegrationTest.java` (Modified)
+  - `src/test/java/com/smartplacement/controller/AuthControllerIntegrationTest.java` (Modified)
+  - `AGENT_LOG.md` (Appended)
+- Why (design decision):
+  - Enforcing eligibility checks directly within the application workflow service guarantees that ineligible candidates cannot bypass client-side checks and flood recruiter queues. Taking an immutable resume snapshot (`resumeSnapshotUrl`) at the moment of submission preserves historical accuracy for auditing, even if a student subsequently modifies or uploads a new resume for other drives. The `UNIQUE(job_id, student_id)` constraint guarantees database-level idempotency against race conditions.
+- How to run/test:
+  - Run `.\mvnw.cmd test` to execute all 68 unit and integration tests.
+  - Run `.\mvnw.cmd spring-boot:run` to launch the server on port 8080.
+- Git commit hash: 47fc2c8 (tag: phase-7-done)
+
 
 
 

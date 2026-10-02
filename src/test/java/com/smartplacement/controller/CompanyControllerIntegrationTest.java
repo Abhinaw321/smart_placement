@@ -45,6 +45,9 @@ class CompanyControllerIntegrationTest {
     private StudentRepository studentRepository;
 
     @Autowired
+    private com.smartplacement.repository.ApplicationRepository applicationRepository;
+
+    @Autowired
     private com.smartplacement.repository.JobRepository jobRepository;
 
     @Autowired
@@ -61,6 +64,7 @@ class CompanyControllerIntegrationTest {
 
     @BeforeEach
     void setUp() throws Exception {
+        applicationRepository.deleteAll();
         jobRepository.deleteAll();
         studentRepository.deleteAll();
         recruiterRepository.deleteAll();
