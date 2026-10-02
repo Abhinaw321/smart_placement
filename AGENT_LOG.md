@@ -498,7 +498,7 @@
 - How to run/test:
   - Inside `frontend/`: `npm.cmd run dev` to launch dev server at `http://localhost:3000`.
   - Production build: `npm.cmd run build`.
-- Git commit hash: pending (tag: phase-11-done)
+- Git commit hash: a91d50d (tag: phase-11-done)
 
 ## [Phase 12] Recruiter Portal, TPO Executive Portal & System Integration — 2026-10-02 18:12 IST
 - What was done:
@@ -532,4 +532,39 @@
   - Build frontend: `npm.cmd run build` inside `frontend/`.
   - Start frontend dev server: `npm.cmd run dev` inside `frontend/`.
   - Start backend server: `.\mvnw.cmd spring-boot:run` in project root.
-- Git commit hash: pending (tag: phase-12-done)
+- Git commit hash: a91d50d (tag: phase-12-done)
+
+## [Phase 13] Production Readiness, Database Seeder & Comprehensive Documentation — 2026-10-02 18:16 IST
+- What was done:
+  - Enhanced dynamic database initializer in `src/main/java/com/smartplacement/config/DataInitializer.java`:
+    - Implemented database engine inspection via JDBC connection metadata (`dataSource.getConnection().getMetaData().getURL()`).
+    - Guarded in-memory test databases (`jdbc:h2:mem:`) to preserve strict isolation across all integration test suites.
+    - Added comprehensive automated demo data seeding for development and production environments:
+      - TPO Admin: `admin@smartplacement.com` / `Admin@123`
+      - Corporate Partners: Google LLC (verified), Microsoft Corporation (verified), and Stripe Inc (pending verification).
+      - Recruiter Profile: Sarah Jenkins (`recruiter@google.com` / `Recruiter@123`).
+      - Placement Drives: Google Cloud Systems (28.5 LPA) and Microsoft Full Stack Web (24.0 LPA) with configured 7-rule eligibility criteria.
+      - Student Profiles: Alex Rivera (`student@smartplacement.com` / `Student@123`) with verified skills and resume, and Priya Sharma (`priya.sharma@campus.edu`) with confirmed placement lock.
+      - Active application, scheduled technical interview, formal placement offer letter, and real-time student notification alerts.
+  - Authored comprehensive root `README.md`:
+    - Complete system architecture Mermaid diagram detailing SPA frontend, reverse proxy router, stateless Spring Security 6 filter chain, GoF strategy pattern engine, and dual storage engines.
+    - Detailed documentation of all 7 pluggable eligibility evaluators and state machine transitions.
+    - Pre-configured demo accounts table with 1-click credentials for instant verification.
+    - Complete REST API catalog mapping all 26 endpoints across 10 controllers.
+    - Step-by-step Quick Start runbook for MySQL, Spring Boot backend, and React/Vite frontend.
+    - Automated test suite commands and OpenAPI / Swagger UI links.
+  - Verified 100% test suite health:
+    - **87 / 87 unit and integration tests passing with 0 failures and 0 errors**.
+  - Verified production frontend build:
+    - Clean Vite production bundle (`dist/index.html`, `dist/assets/*`).
+- Files created/modified:
+  - `src/main/java/com/smartplacement/config/DataInitializer.java` (Modified)
+  - `README.md` (Created)
+  - `AGENT_LOG.md` (Appended)
+- Why (design decision):
+  - Providing automated demonstration datasets with environment-aware datasource detection allows developers and evaluators to experience a fully populated, living recruitment portal immediately upon application startup without compromising unit/integration test suite isolation or requiring manual SQL scripting.
+- How to run/test:
+  - Run all tests: `.\mvnw.cmd test` (87 tests passing).
+  - Launch backend: `.\mvnw.cmd spring-boot:run` (Swagger at `http://localhost:8080/swagger-ui.html`).
+  - Launch frontend: `cd frontend && npm.cmd run dev` (SPA at `http://localhost:3000`).
+- Git commit hash: pending (tag: phase-13-done)
