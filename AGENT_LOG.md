@@ -150,6 +150,6 @@
 - How to run/test:
   - Run `.\mvnw.cmd test` to execute all 31 tests.
   - Run `.\mvnw.cmd spring-boot:run` to launch the server on port 8080.
-- Git commit hash: [Pending commit] (tag: phase-4-done)
+- Git commit hash: edbedcb (tag: phase-4-done)
 
 
