@@ -35,10 +35,10 @@ export function AuthProvider({ children }) {
     const res = await authApi.login({ email, password });
     const authToken = res.accessToken;
     const authUser = {
-      id: res.user.id,
-      email: res.user.email,
-      role: res.user.role,
-      name: res.user.name || res.user.email.split('@')[0],
+      id: res.userId || res.user?.id,
+      email: res.email || res.user?.email,
+      role: res.role || res.user?.role,
+      name: (res.email || res.user?.email || 'User').split('@')[0],
     };
 
     localStorage.setItem('spms_token', authToken);

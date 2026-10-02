@@ -13,9 +13,9 @@ import com.smartplacement.entity.JobStatus;
 import com.smartplacement.entity.JobType;
 import com.smartplacement.entity.Notification;
 import com.smartplacement.entity.NotificationType;
-import com.smartplacement.entity.OfferStatus;
 import com.smartplacement.entity.Recruiter;
 import com.smartplacement.entity.Role;
+import com.smartplacement.entity.SkillProficiency;
 import com.smartplacement.entity.Student;
 import com.smartplacement.entity.StudentSkill;
 import com.smartplacement.entity.User;
@@ -146,8 +146,10 @@ public class DataInitializer implements CommandLineRunner {
         Company google = new Company(
                 "Google LLC",
                 "Cloud, Search & Generative AI Systems",
-                "Bangalore & Mountain View",
-                "https://careers.google.com"
+                "https://careers.google.com",
+                "Technology",
+                null,
+                "Bangalore"
         );
         google.setVerified(true);
         google = companyRepository.save(google);
@@ -155,8 +157,10 @@ public class DataInitializer implements CommandLineRunner {
         Company microsoft = new Company(
                 "Microsoft Corporation",
                 "Cloud Infrastructure & Developer Tools",
-                "Hyderabad & Redmond",
-                "https://careers.microsoft.com"
+                "https://careers.microsoft.com",
+                "Enterprise Software",
+                null,
+                "Hyderabad"
         );
         microsoft.setVerified(true);
         microsoft = companyRepository.save(microsoft);
@@ -164,8 +168,10 @@ public class DataInitializer implements CommandLineRunner {
         Company stripe = new Company(
                 "Stripe Inc",
                 "Financial Technology & Global Payments",
-                "Bangalore & San Francisco",
-                "https://stripe.com/jobs"
+                "https://stripe.com/jobs",
+                "Fintech",
+                null,
+                "Remote"
         );
         stripe.setVerified(false); // Pending verification for TPO admin demonstration!
         companyRepository.save(stripe);
@@ -182,25 +188,24 @@ public class DataInitializer implements CommandLineRunner {
         Recruiter recruiter = new Recruiter(
                 recruiterUser,
                 google,
-                "Sarah Jenkins",
                 "Head of University Talent Acquisition",
                 "+91 9876543210"
         );
-        recruiterRepository.save(recruiter);
+        recruiter = recruiterRepository.save(recruiter);
 
         // 3. Seed Placement Job Drives
         Job googleJob = new Job(
                 google,
+                recruiter,
                 "Software Engineer - Cloud Systems",
                 "Build scalable multi-tenant distributed cloud infrastructure serving billions of queries.",
                 JobType.FULL_TIME,
                 "Bangalore / Hybrid",
                 28.5,
-                LocalDateTime.now().plusMonths(3)
+                LocalDateTime.now().plusMonths(3),
+                LocalDate.now().plusMonths(1),
+                JobStatus.PUBLISHED
         );
-        googleJob.setDriveDate(LocalDate.now().plusMonths(1));
-        googleJob.setStatus(JobStatus.PUBLISHED);
-
         EligibilityCriteria googleCriteria = new EligibilityCriteria(
                 googleJob,
                 7.5,
@@ -208,26 +213,26 @@ public class DataInitializer implements CommandLineRunner {
                 0,
                 70.0,
                 70.0,
-                1,
-                List.of("CSE", "IT", "ECE"),
-                List.of(2026, 2027),
-                List.of("Java", "Spring Boot", "SQL")
+                1
         );
+        googleCriteria.setAllowedBranches(List.of("CSE", "IT", "ECE"));
+        googleCriteria.setAllowedGradYears(List.of(2026, 2027));
+        googleCriteria.setRequiredSkills(List.of("Java", "Spring Boot", "SQL"));
         googleJob.setEligibilityCriteria(googleCriteria);
         googleJob = jobRepository.save(googleJob);
 
         Job msftJob = new Job(
                 microsoft,
+                recruiter,
                 "Software Engineer - Full Stack Web",
                 "Design modern developer-facing enterprise web experiences using React, TypeScript, and Azure.",
                 JobType.FULL_TIME,
                 "Hyderabad",
                 24.0,
-                LocalDateTime.now().plusMonths(2)
+                LocalDateTime.now().plusMonths(2),
+                LocalDate.now().plusWeeks(3),
+                JobStatus.PUBLISHED
         );
-        msftJob.setDriveDate(LocalDate.now().plusWeeks(3));
-        msftJob.setStatus(JobStatus.PUBLISHED);
-
         EligibilityCriteria msftCriteria = new EligibilityCriteria(
                 msftJob,
                 7.0,
@@ -235,11 +240,11 @@ public class DataInitializer implements CommandLineRunner {
                 1,
                 65.0,
                 65.0,
-                1,
-                List.of("CSE", "IT"),
-                List.of(2026, 2027),
-                List.of("React", "TypeScript", "Node.js")
+                1
         );
+        msftCriteria.setAllowedBranches(List.of("CSE", "IT"));
+        msftCriteria.setAllowedGradYears(List.of(2026, 2027));
+        msftCriteria.setRequiredSkills(List.of("React", "TypeScript", "Node.js"));
         msftJob.setEligibilityCriteria(msftCriteria);
         jobRepository.save(msftJob);
 
@@ -255,28 +260,30 @@ public class DataInitializer implements CommandLineRunner {
         Student alex = new Student(
                 studentUser,
                 "2023CS0101",
-                "Alex Rivera",
+                "Alex",
+                "Rivera",
                 "+91 9123456780",
-                "Computer Science and Engineering",
+                "MALE",
+                "CSE",
                 2026,
-                7,
-                8.75,
-                92.5,
-                90.0,
-                0,
-                0,
-                0
+                8.75
         );
+        alex.setTenthPercentage(92.5);
+        alex.setTwelfthPercentage(90.0);
+        alex.setActiveBacklogs(0);
+        alex.setHistoryBacklogs(0);
+        alex.setGapYears(0);
         alex.setResumeUrl("/uploads/resumes/alex_rivera_sample_resume.pdf");
+        alex.setResumeFilename("alex_rivera_sample_resume.pdf");
         alex.setIsPlaced(false);
         alex = studentRepository.save(alex);
 
         // Add skills for Alex
-        skillRepository.save(new StudentSkill(alex, "Java", "EXPERT"));
-        skillRepository.save(new StudentSkill(alex, "Spring Boot", "ADVANCED"));
-        skillRepository.save(new StudentSkill(alex, "React", "ADVANCED"));
-        skillRepository.save(new StudentSkill(alex, "PostgreSQL", "ADVANCED"));
-        skillRepository.save(new StudentSkill(alex, "Docker", "INTERMEDIATE"));
+        skillRepository.save(new StudentSkill(alex, "Java", SkillProficiency.EXPERT));
+        skillRepository.save(new StudentSkill(alex, "Spring Boot", SkillProficiency.ADVANCED));
+        skillRepository.save(new StudentSkill(alex, "React", SkillProficiency.ADVANCED));
+        skillRepository.save(new StudentSkill(alex, "PostgreSQL", SkillProficiency.ADVANCED));
+        skillRepository.save(new StudentSkill(alex, "Docker", SkillProficiency.INTERMEDIATE));
 
         // 5. Seed Placed Student (Priya Sharma)
         User priyaUser = new User(
@@ -290,18 +297,16 @@ public class DataInitializer implements CommandLineRunner {
         Student priya = new Student(
                 priyaUser,
                 "2023IT0142",
-                "Priya Sharma",
+                "Priya",
+                "Sharma",
                 "+91 9988776655",
-                "Information Technology",
+                "FEMALE",
+                "IT",
                 2026,
-                7,
-                9.20,
-                95.0,
-                94.0,
-                0,
-                0,
-                0
+                9.20
         );
+        priya.setTenthPercentage(95.0);
+        priya.setTwelfthPercentage(94.0);
         priya.setIsPlaced(true);
         studentRepository.save(priya);
 
@@ -311,7 +316,7 @@ public class DataInitializer implements CommandLineRunner {
                 alex,
                 alex.getResumeUrl()
         );
-        application.setStatus(ApplicationStatus.INTERVIEW_SCHEDULED);
+        application.setStatus(ApplicationStatus.TECHNICAL_INTERVIEW);
         application.setCurrentRound("Technical Round 1");
         application = applicationRepository.save(application);
 
@@ -334,18 +339,22 @@ public class DataInitializer implements CommandLineRunner {
                 googleJob,
                 28.5,
                 "Software Engineer - Cloud Systems",
-                LocalDate.now().plusDays(14)
+                LocalDate.now(),
+                LocalDate.now().plusDays(14),
+                LocalDate.now().plusMonths(3),
+                null,
+                "Congratulations Alex! We were thoroughly impressed by your system architecture acumen."
         );
-        offer.setJoiningDate(LocalDate.now().plusMonths(3));
-        offer.setNotes("Congratulations Alex! We were thoroughly impressed by your system architecture acumen.");
-        jobOfferRepository.save(offer);
+        offer = jobOfferRepository.save(offer);
 
         // 8. Seed Welcome Notifications
         Notification notif1 = new Notification(
                 studentUser,
                 "Application Shortlisted!",
                 "Your application for Google LLC (Software Engineer - Cloud Systems) has been shortlisted.",
-                NotificationType.APPLICATION_UPDATE
+                NotificationType.APPLICATION_UPDATE,
+                "APPLICATION",
+                application.getId()
         );
         notificationRepository.save(notif1);
 
@@ -353,7 +362,9 @@ public class DataInitializer implements CommandLineRunner {
                 studentUser,
                 "Official Placement Offer Extended!",
                 "Google LLC has issued you an official placement offer of 28.5 LPA. Please review and respond.",
-                NotificationType.OFFER_RECEIVED
+                NotificationType.OFFER_RECEIVED,
+                "JOB_OFFER",
+                offer.getId()
         );
         notificationRepository.save(notif2);
 

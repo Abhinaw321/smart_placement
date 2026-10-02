@@ -568,3 +568,34 @@
   - Launch backend: `.\mvnw.cmd spring-boot:run` (Swagger at `http://localhost:8080/swagger-ui.html`).
   - Launch frontend: `cd frontend && npm.cmd run dev` (SPA at `http://localhost:3000`).
 - Git commit hash: a7a70fc (tag: phase-13-done)
+
+## [Diagnostics] Windows Environment & Database Readiness Check — 2026-10-02 18:28 IST
+- Diagnostic Findings:
+  - Java runtime: OpenJDK 25.0.4.1 Temurin LTS.
+  - Maven pom.xml target: Java 21 LTS (`<java.version>21</java.version>`).
+  - Node.js & npm: Node v24.6.0, npm 11.4.0.
+  - Compilation: `mvnw.cmd compile` compiles with 0 errors on Java 25.
+  - MySQL status: Windows Service `MySQL80` is installed and RUNNING (`Ver 8.0.44`). Binary located at `C:\Program Files\MySQL\MySQL Server 8.0\bin\mysql.exe`.
+  - Database connection: Root password is not `root` or empty (`ERROR 1045 Access denied`).
+  - Resolution proposed: User can either provide MySQL password or activate `application-dev.yml` H2 in-memory profile without breaking MySQL production config.
+
+## [Runtime Verification] Full Stack MySQL Launch & Live Verification — 2026-10-02 23:05 IST
+- What was done:
+  - Connected to local MySQL 8.0 instance using user environment variable credentials.
+  - Verified and created schema `smart_placement_db`.
+  - Fixed constructor parameter mappings in `DataInitializer.java` for full campus demo data initialization on MySQL startup:
+    - Fixed `Company`, `Recruiter`, `Job`, `Student`, `StudentSkill`, `Application`, `Interview`, `JobOffer`, and `Notification` entity instantiation.
+    - Successfully seeded Google LLC, Microsoft Corporation, Stripe Inc, placement drives (28.5 LPA and 24.0 LPA), Alex Rivera student profile, applications, interview rounds, and job offers.
+  - Fixed JWT response payload deserialization in `frontend/src/context/AuthContext.jsx` to map `res.userId`, `res.email`, `res.role`.
+  - Launched Spring Boot backend server on port 8080 (`http://localhost:8080/swagger-ui.html` returns HTTP 200).
+  - Launched Vite React development server on port 3000 (`http://localhost:3000` returns HTTP 200).
+  - Verified end-to-end API workflows via automated requests:
+    - Student login (`student@smartplacement.com`) -> authenticated profile, published drives fetched.
+    - Recruiter login (`recruiter@google.com`) -> dashboard analytics verified.
+    - TPO Admin login (`admin@smartplacement.com`) -> institutional metrics verified.
+  - Passwords strictly kept out of repository code and committed files.
+- Files created/modified:
+  - `src/main/java/com/smartplacement/config/DataInitializer.java` (Modified)
+  - `frontend/src/context/AuthContext.jsx` (Modified)
+  - `AGENT_LOG.md` (Appended)
+- Git commit hash: pending (tag: working-v1)
