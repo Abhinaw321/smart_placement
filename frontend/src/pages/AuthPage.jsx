@@ -1,13 +1,28 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { authApi } from '../services/api';
-import { Sparkles, Shield, User, Briefcase, Lock, Mail, ArrowRight, CheckCircle2 } from 'lucide-react';
+import Button from '../components/ui/Button';
+import Card from '../components/ui/Card';
+import Input from '../components/ui/Input';
+import Badge from '../components/ui/Badge';
+import {
+  Compass,
+  ArrowRight,
+  AlertCircle,
+  CheckCircle2,
+  Mail,
+  Lock,
+  User,
+  Building2,
+  Phone,
+  GraduationCap,
+  Sparkles,
+} from 'lucide-react';
 
 export default function AuthPage() {
   const { login } = useAuth();
-  const [mode, setMode] = useState('login'); // 'login', 'student_reg', 'recruiter_reg'
+  const [mode, setMode] = useState('login'); // 'login' | 'student_reg' | 'recruiter_reg'
 
-  // Form states
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -28,23 +43,23 @@ export default function AuthPage() {
   // Recruiter specific registration fields
   const [recruiterForm, setRecruiterForm] = useState({
     companyName: '',
-    designation: '',
+    designation: 'Technical Talent Lead',
     phone: '',
   });
 
-  const handleQuickFill = (demoRole) => {
+  const handleQuickFill = (role) => {
     setError('');
     setSuccessMsg('');
     setMode('login');
-    if (demoRole === 'admin') {
+    if (role === 'admin') {
       setEmail('admin@smartplacement.com');
       setPassword('Admin@123');
-    } else if (demoRole === 'student') {
-      setEmail('arjun.varma@univ.edu');
-      setPassword('Secret@123');
-    } else if (demoRole === 'recruiter') {
+    } else if (role === 'student') {
+      setEmail('student@smartplacement.com');
+      setPassword('Student@123');
+    } else if (role === 'recruiter') {
       setEmail('recruiter@google.com');
-      setPassword('Secret@123');
+      setPassword('Recruiter@123');
     }
   };
 
@@ -75,7 +90,7 @@ export default function AuthPage() {
         await login(email, password);
       }
     } catch (err) {
-      setError(err.message || 'Authentication failed');
+      setError(err.message || 'Authentication failed. Check credentials and try again.');
     } finally {
       setLoading(false);
     }
@@ -88,263 +103,277 @@ export default function AuthPage() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '2rem 1.5rem',
+        padding: '2rem 1rem',
+        background: 'var(--bg)',
       }}
     >
-      <div style={{ width: '100%', maxWidth: '480px' }}>
-        {/* Brand Banner */}
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+      <div style={{ width: '100%', maxWidth: '440px' }} className="animate-fade-in">
+        {/* Brand Header */}
+        <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
           <div
             style={{
-              width: '56px',
-              height: '56px',
-              borderRadius: '16px',
-              background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+              width: '40px',
+              height: '40px',
+              borderRadius: '10px',
+              background: 'var(--surface)',
+              border: '1px solid var(--border)',
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#fff',
-              boxShadow: '0 0 25px rgba(99, 102, 241, 0.6)',
+              color: 'var(--accent)',
               marginBottom: '1rem',
             }}
           >
-            <Sparkles size={30} />
+            <Compass size={22} strokeWidth={2.2} />
           </div>
-          <h1 style={{ fontSize: '1.85rem', marginBottom: '0.25rem' }}>
-            Smart Placement Portal
+
+          <h1
+            style={{
+              fontSize: '1.65rem',
+              fontWeight: 700,
+              color: 'var(--text)',
+              letterSpacing: '-0.03em',
+              marginBottom: '0.35rem',
+            }}
+          >
+            {mode === 'login'
+              ? 'Sign in to PlacementOS'
+              : mode === 'student_reg'
+              ? 'Join as Candidate'
+              : 'Join as Corporate Recruiter'}
           </h1>
-          <p style={{ fontSize: '0.9rem', color: '#94a3b8' }}>
-            Next-Generation Campus Recruitment & Automated Eligibility Management
+          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+            {mode === 'login'
+              ? 'Campus hiring, minus the spreadsheet trauma.'
+              : mode === 'student_reg'
+              ? 'Build your profile, auto-verify eligibility, and land offers.'
+              : 'Publish placement drives and interview top campus talent.'}
           </p>
         </div>
 
-        {/* Demo Account Quick-Fill Pill Bar */}
-        <div
-          className="glass-card"
-          style={{
-            padding: '0.75rem',
-            marginBottom: '1.5rem',
-            background: 'rgba(30, 41, 59, 0.6)',
-          }}
-        >
-          <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#94a3b8', textAlign: 'center', marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-            Quick Demo Logins (1-Click Fill):
-          </div>
-          <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center' }}>
-            <button
-              type="button"
-              onClick={() => handleQuickFill('admin')}
-              className="btn btn-secondary btn-sm"
-              style={{ fontSize: '0.75rem', borderColor: 'rgba(245, 158, 11, 0.3)' }}
-            >
-              <Shield size={12} color="#fbbf24" /> TPO Admin
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickFill('student')}
-              className="btn btn-secondary btn-sm"
-              style={{ fontSize: '0.75rem', borderColor: 'rgba(16, 185, 129, 0.3)' }}
-            >
-              <User size={12} color="#34d399" /> Student
-            </button>
-            <button
-              type="button"
-              onClick={() => handleQuickFill('recruiter')}
-              className="btn btn-secondary btn-sm"
-              style={{ fontSize: '0.75rem', borderColor: 'rgba(99, 102, 241, 0.3)' }}
-            >
-              <Briefcase size={12} color="#818cf8" /> Recruiter
-            </button>
-          </div>
-        </div>
-
-        {/* Card Form */}
-        <div className="glass-card" style={{ padding: '2rem' }}>
-          {/* Mode Switcher Tabs */}
+        {/* Auth Card */}
+        <Card style={{ padding: '1.75rem' }}>
+          {/* Segmented Mode Selector */}
           <div
             style={{
-              display: 'flex',
-              background: 'rgba(0, 0, 0, 0.3)',
-              padding: '0.3rem',
-              borderRadius: '10px',
-              marginBottom: '1.5rem',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              background: 'var(--bg)',
+              padding: '3px',
+              borderRadius: 'var(--radius-md)',
+              border: '1px solid var(--border)',
+              marginBottom: '1.25rem',
+              gap: '2px',
             }}
           >
-            <button
-              type="button"
-              onClick={() => setMode('login')}
-              style={{
-                flex: 1,
-                padding: '0.5rem',
-                border: 'none',
-                borderRadius: '8px',
-                background: mode === 'login' ? 'rgba(99, 102, 241, 0.3)' : 'transparent',
-                color: mode === 'login' ? '#fff' : '#94a3b8',
-                fontWeight: 600,
-                fontSize: '0.85rem',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-              }}
-            >
-              Sign In
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode('student_reg')}
-              style={{
-                flex: 1,
-                padding: '0.5rem',
-                border: 'none',
-                borderRadius: '8px',
-                background: mode === 'student_reg' ? 'rgba(16, 185, 129, 0.3)' : 'transparent',
-                color: mode === 'student_reg' ? '#fff' : '#94a3b8',
-                fontWeight: 600,
-                fontSize: '0.85rem',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-              }}
-            >
-              Student Register
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode('recruiter_reg')}
-              style={{
-                flex: 1,
-                padding: '0.5rem',
-                border: 'none',
-                borderRadius: '8px',
-                background: mode === 'recruiter_reg' ? 'rgba(99, 102, 241, 0.3)' : 'transparent',
-                color: mode === 'recruiter_reg' ? '#fff' : '#94a3b8',
-                fontWeight: 600,
-                fontSize: '0.85rem',
-                cursor: 'pointer',
-                transition: 'all 0.2s',
-              }}
-            >
-              Recruiter
-            </button>
+            {[
+              { id: 'login', label: 'Sign In' },
+              { id: 'student_reg', label: 'Student' },
+              { id: 'recruiter_reg', label: 'Recruiter' },
+            ].map((tab) => {
+              const active = mode === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => {
+                    setMode(tab.id);
+                    setError('');
+                  }}
+                  style={{
+                    padding: '0.45rem 0.5rem',
+                    fontSize: '0.78rem',
+                    fontWeight: active ? 600 : 500,
+                    borderRadius: 'var(--radius-sm)',
+                    border: 'none',
+                    cursor: 'pointer',
+                    transition: 'all 0.12s ease',
+                    background: active ? 'var(--surface-elevated)' : 'transparent',
+                    color: active ? 'var(--text)' : 'var(--text-muted)',
+                    boxShadow: active ? '0 1px 2px rgba(0,0,0,0.4)' : 'none',
+                  }}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
           </div>
 
-          {error && (
+          {/* Quick Demo Fill (Linear style) */}
+          {mode === 'login' && (
             <div
               style={{
-                padding: '0.75rem 1rem',
-                borderRadius: '8px',
-                background: 'rgba(239, 68, 68, 0.15)',
-                border: '1px solid rgba(239, 68, 68, 0.4)',
-                color: '#f87171',
-                fontSize: '0.85rem',
+                background: 'rgba(198, 255, 61, 0.04)',
+                border: '1px solid var(--accent-border)',
+                borderRadius: 'var(--radius-md)',
+                padding: '0.75rem 0.85rem',
                 marginBottom: '1.25rem',
               }}
             >
-              {error}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  marginBottom: '0.45rem',
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: '0.7rem',
+                    fontWeight: 600,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.05em',
+                    color: 'var(--accent)',
+                  }}
+                >
+                  1-Click Demo Accounts
+                </span>
+                <Badge variant="accent" style={{ fontSize: '0.65rem', padding: '0.1rem 0.4rem' }}>
+                  Live MySQL
+                </Badge>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.4rem' }}>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => handleQuickFill('student')}
+                  style={{ fontSize: '0.72rem', height: '28px' }}
+                >
+                  Student
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => handleQuickFill('recruiter')}
+                  style={{ fontSize: '0.72rem', height: '28px' }}
+                >
+                  Recruiter
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => handleQuickFill('admin')}
+                  style={{ fontSize: '0.72rem', height: '28px' }}
+                >
+                  TPO Admin
+                </Button>
+              </div>
             </div>
           )}
 
-          <form onSubmit={handleSubmit}>
-            {/* Common Credentials */}
-            <div className="form-group">
-              <label className="form-label">Email Address</label>
-              <div style={{ position: 'relative' }}>
-                <input
-                  id="auth-email-input"
-                  type="email"
-                  required
-                  placeholder="name@university.edu"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  className="form-input"
-                  style={{ paddingLeft: '2.5rem' }}
-                />
-                <Mail size={16} color="#64748b" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)' }} />
-              </div>
+          {/* Error Banner */}
+          {error && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                background: 'var(--status-red-bg)',
+                border: '1px solid var(--status-red-border)',
+                borderRadius: 'var(--radius-md)',
+                padding: '0.65rem 0.85rem',
+                color: 'var(--status-red-fg)',
+                fontSize: '0.8rem',
+                fontWeight: 500,
+                marginBottom: '1.25rem',
+              }}
+            >
+              <AlertCircle size={15} style={{ flexShrink: 0 }} />
+              <span>{error}</span>
             </div>
+          )}
 
-            <div className="form-group">
-              <label className="form-label">Password</label>
-              <div style={{ position: 'relative' }}>
-                <input
-                  id="auth-password-input"
-                  type="password"
-                  required
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  className="form-input"
-                  style={{ paddingLeft: '2.5rem' }}
-                />
-                <Lock size={16} color="#64748b" style={{ position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)' }} />
-              </div>
-            </div>
+          {/* Form */}
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
+            <Input
+              label="Email Address"
+              type="email"
+              required
+              placeholder="you@institution.edu"
+              icon={Mail}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+
+            <Input
+              label="Password"
+              type="password"
+              required
+              placeholder="••••••••••••"
+              icon={Lock}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
 
             {/* Student Registration Fields */}
             {mode === 'student_reg' && (
               <>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                  <div className="form-group">
-                    <label className="form-label">First Name</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Arjun"
-                      value={studentForm.firstName}
-                      onChange={e => setStudentForm({ ...studentForm, firstName: e.target.value })}
-                      className="form-input"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">Last Name</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="Varma"
-                      value={studentForm.lastName}
-                      onChange={e => setStudentForm({ ...studentForm, lastName: e.target.value })}
-                      className="form-input"
-                    />
-                  </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                  <Input
+                    label="First Name"
+                    required
+                    placeholder="Alex"
+                    value={studentForm.firstName}
+                    onChange={(e) => setStudentForm({ ...studentForm, firstName: e.target.value })}
+                  />
+                  <Input
+                    label="Last Name"
+                    required
+                    placeholder="Rivera"
+                    value={studentForm.lastName}
+                    onChange={(e) => setStudentForm({ ...studentForm, lastName: e.target.value })}
+                  />
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                  <div className="form-group">
-                    <label className="form-label">Roll Number</label>
-                    <input
-                      type="text"
-                      required
-                      placeholder="2024CS101"
-                      value={studentForm.rollNumber}
-                      onChange={e => setStudentForm({ ...studentForm, rollNumber: e.target.value })}
-                      className="form-input"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">CGPA (0 - 10)</label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      max="10"
-                      required
-                      value={studentForm.cgpa}
-                      onChange={e => setStudentForm({ ...studentForm, cgpa: e.target.value })}
-                      className="form-input"
-                    />
-                  </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '0.75rem' }}>
+                  <Input
+                    label="Roll Number"
+                    required
+                    placeholder="2023CS0101"
+                    value={studentForm.rollNumber}
+                    onChange={(e) => setStudentForm({ ...studentForm, rollNumber: e.target.value })}
+                  />
+                  <Input
+                    label="Phone"
+                    required
+                    placeholder="+91..."
+                    value={studentForm.phone}
+                    onChange={(e) => setStudentForm({ ...studentForm, phone: e.target.value })}
+                  />
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">Branch / Department</label>
-                  <select
-                    value={studentForm.branch}
-                    onChange={e => setStudentForm({ ...studentForm, branch: e.target.value })}
-                    className="form-select"
-                  >
-                    <option value="Computer Science and Engineering">Computer Science and Engineering</option>
-                    <option value="Information Technology">Information Technology</option>
-                    <option value="Electronics and Communication Engineering">Electronics and Communication Engineering</option>
-                    <option value="Mechanical Engineering">Mechanical Engineering</option>
-                  </select>
+                <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '0.75rem' }}>
+                  <div>
+                    <label className="input-label">Branch</label>
+                    <select
+                      className="input-base"
+                      value={studentForm.branch}
+                      onChange={(e) => setStudentForm({ ...studentForm, branch: e.target.value })}
+                    >
+                      <option value="Computer Science and Engineering">Computer Science (CSE)</option>
+                      <option value="Information Technology">Information Tech (IT)</option>
+                      <option value="Electronics and Communication">Electronics (ECE)</option>
+                      <option value="Electrical Engineering">Electrical (EEE)</option>
+                      <option value="Mechanical Engineering">Mechanical</option>
+                      <option value="Civil Engineering">Civil</option>
+                    </select>
+                  </div>
+
+                  <Input
+                    label="CGPA (0-10)"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    max="10"
+                    required
+                    value={studentForm.cgpa}
+                    onChange={(e) => setStudentForm({ ...studentForm, cgpa: e.target.value })}
+                  />
                 </div>
               </>
             )}
@@ -352,47 +381,54 @@ export default function AuthPage() {
             {/* Recruiter Registration Fields */}
             {mode === 'recruiter_reg' && (
               <>
-                <div className="form-group">
-                  <label className="form-label">Company Name</label>
-                  <input
-                    type="text"
+                <Input
+                  label="Company Name"
+                  required
+                  placeholder="e.g. Stripe, Google, Linear"
+                  icon={Building2}
+                  value={recruiterForm.companyName}
+                  onChange={(e) => setRecruiterForm({ ...recruiterForm, companyName: e.target.value })}
+                />
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                  <Input
+                    label="Designation"
                     required
-                    placeholder="e.g. Google, Atlassian"
-                    value={recruiterForm.companyName}
-                    onChange={e => setRecruiterForm({ ...recruiterForm, companyName: e.target.value })}
-                    className="form-input"
-                  />
-                </div>
-                <div className="form-group">
-                  <label className="form-label">Job Designation</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Technical University Recruiter"
+                    placeholder="Lead Recruiter"
                     value={recruiterForm.designation}
-                    onChange={e => setRecruiterForm({ ...recruiterForm, designation: e.target.value })}
-                    className="form-input"
+                    onChange={(e) => setRecruiterForm({ ...recruiterForm, designation: e.target.value })}
+                  />
+                  <Input
+                    label="Contact Phone"
+                    required
+                    placeholder="+91..."
+                    icon={Phone}
+                    value={recruiterForm.phone}
+                    onChange={(e) => setRecruiterForm({ ...recruiterForm, phone: e.target.value })}
                   />
                 </div>
               </>
             )}
 
-            <button
-              id="auth-submit-btn"
+            <Button
               type="submit"
-              disabled={loading}
-              className="btn btn-primary"
-              style={{ width: '100%', marginTop: '0.75rem', padding: '0.85rem' }}
+              variant="primary"
+              size="lg"
+              loading={loading}
+              style={{ marginTop: '0.5rem', width: '100%' }}
             >
-              {loading ? (
-                'Processing...'
-              ) : mode === 'login' ? (
-                <>Sign In to Portal <ArrowRight size={18} /></>
-              ) : (
-                <>Complete Registration <CheckCircle2 size={18} /></>
-              )}
-            </button>
+              {mode === 'login'
+                ? 'Sign In to PlacementOS'
+                : mode === 'student_reg'
+                ? 'Complete Candidate Registration'
+                : 'Register Corporate Account'}
+            </Button>
           </form>
+        </Card>
+
+        {/* Subtle Footer Note */}
+        <div style={{ textAlign: 'center', marginTop: '1.25rem', fontSize: '0.75rem', color: 'var(--text-subtle)' }}>
+          PlacementOS • Institutional Placement Operating System • v1.0
         </div>
       </div>
     </div>

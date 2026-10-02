@@ -41,12 +41,7 @@ function AppContent() {
   }
 
   if (!isAuthenticated || !user) {
-    return (
-      <>
-        <Navbar />
-        <AuthPage />
-      </>
-    );
+    return <AuthPage />;
   }
 
   return (

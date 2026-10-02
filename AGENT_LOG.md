@@ -599,3 +599,45 @@
   - `frontend/src/context/AuthContext.jsx` (Modified)
   - `AGENT_LOG.md` (Appended)
 - Git commit hash: e70e798 (tag: working-v1)
+
+## [UI Redesign - Phase 1] Linear/Raycast Design System & Auth Page — 2026-10-02 23:18 IST
+- What was done:
+  - Created and switched to isolated git experiment branch: `experiment/ui-redesign`.
+  - Tag `working-v1` safely preserved on `main` branch.
+  - Configured Google Fonts `Space Grotesk` (weights 500, 600, 700) and `Inter` (weights 400, 500, 600, 700) with lime SVG favicon in `frontend/index.html`.
+  - Implemented strict token design system in `frontend/src/index.css`:
+    - Strict palette: Background `#0A0A0B`, Surface `#141416`, Elevated `#18181B`, Border `#26262B`, Text `#F4F4F5`, Muted `#8A8A93`, Subtle `#52525B`.
+    - Single Accent: `#C6FF3D` (lime) with subtle border & background tint variants.
+    - Soft, low-saturation status badges (green, amber, red).
+    - Tight letter spacing (`-0.03em` for headings, `-0.01em` for body).
+    - Micro-animations for button presses and focus states.
+  - Built core design system primitives in `frontend/src/components/ui/`:
+    - `Button.jsx`: Primary (lime `#C6FF3D`, black text), Secondary (1px border), Ghost, Danger with subtle press states and loading spinners.
+    - `Card.jsx`: 1px `#26262B` border, rounded-xl, `#141416` surface, sub-components (`CardHeader`, `CardTitle`, `CardDescription`).
+    - `Badge.jsx`: Soft low-saturation variants (`accent`, `success`, `warning`, `danger`, `neutral`) with optional live pulse dot.
+    - `Input.jsx`: Linear-style input with subtle uppercase label, accent focus outline, optional left icon, and error validation text.
+    - `StatCard.jsx`: Metric card with Space Grotesk typography, subtle change pill, and secondary detail slot.
+    - `EmptyState.jsx`: Centered container with 1px border icon frame, punchy headline, and action button slot.
+    - `Stepper.jsx`: Linear pipeline indicator with numbered or bullet dots and status connectors.
+  - Completely redesigned `frontend/src/pages/AuthPage.jsx`:
+    - Clean `#0A0A0B` centered view with Compass icon and Space Grotesk typography.
+    - Segmented role switcher (Sign In / Candidate / Corporate Recruiter).
+    - 1-Click Demo Accounts toolbar for instant login testing against live MySQL.
+    - Zero emojis anywhere in the UI; strictly `lucide-react` icons.
+    - Human, punchy microcopy ("Campus hiring, minus the spreadsheet trauma").
+    - Full responsiveness on 8px grid.
+- Files created/modified:
+  - `frontend/index.html` (Modified)
+  - `frontend/src/index.css` (Modified)
+  - `frontend/src/components/ui/Button.jsx` (Created)
+  - `frontend/src/components/ui/Card.jsx` (Created)
+  - `frontend/src/components/ui/Badge.jsx` (Created)
+  - `frontend/src/components/ui/Input.jsx` (Created)
+  - `frontend/src/components/ui/StatCard.jsx` (Created)
+  - `frontend/src/components/ui/EmptyState.jsx` (Created)
+  - `frontend/src/components/ui/Stepper.jsx` (Created)
+  - `frontend/src/pages/AuthPage.jsx` (Modified)
+  - `frontend/src/App.jsx` (Modified)
+  - `AGENT_LOG.md` (Appended)
+- Git commit hash: pending review (branch: experiment/ui-redesign)
+
