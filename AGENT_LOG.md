@@ -401,7 +401,51 @@
 - How to run/test:
   - Run `.\mvnw.cmd test` to execute all 81 unit and integration tests.
   - Run `.\mvnw.cmd spring-boot:run` to launch the server on port 8080.
-- Git commit hash: 8a90c81 (tag: phase-9-done)
+- Git commit hash: cbd5039 (tag: phase-9-done)
+
+## [Phase 10] Analytics & TPO Executive Dashboard Module — 2026-10-02 17:58 IST
+- What was done:
+  - Designed and implemented complete analytics aggregation architecture for candidate, recruiter, and institutional TPO dashboards.
+  - Added specialized analytical queries across Spring Data JPA repositories:
+    - `StudentRepository`: `countByIsPlacedTrue()`, `getBranchWisePlacementCounts()`.
+    - `JobOfferRepository`: `findMaxAcceptedCtc()`, `findAvgAcceptedCtc()`, `findAcceptedCtcList()`, `findAllWithFullDetails()`, and company/student offer count queries.
+    - `JobRepository`: `countByStatus()`, `countByCompanyId()`, `countByCompanyIdAndStatus()`.
+    - `ApplicationRepository`: `countByStudentId()`, `countByStudentIdAndStatus()`, `countByJobCompanyId()`, `countByJobCompanyIdAndStatus()`.
+    - `InterviewRepository`: `countByApplicationStudentId()`, `countByApplicationJobCompanyId()`.
+    - `CompanyRepository`: `countByVerified()`.
+  - Built DTO suite: `StudentDashboardDto` (application tracker, offer count, profile completion %, eligible jobs count), `RecruiterDashboardDto` (job count, active drives, throughput, offers accepted), `TpoDashboardDto` (overall placement %, registered/placed students, verified companies, highest/average/median CTC LPA), `DepartmentPlacementStatDto` (branch-wise placement breakdown), and `SalaryDistributionDto` (tiers: <6 LPA, 6-12 LPA, 12-20 LPA, >20 LPA).
+  - Implemented `AnalyticsService` and `AnalyticsServiceImpl` supporting student dashboard calculations, recruiter pipeline KPIs, executive TPO metrics with median and department aggregations, and streaming RFC 4180 compliant CSV master sheet exports.
+  - Implemented REST controller `AnalyticsController` (`/api/v1/analytics`):
+    - `GET /api/v1/analytics/student-dashboard` (`ROLE_STUDENT`)
+    - `GET /api/v1/analytics/recruiter-dashboard` (`ROLE_RECRUITER`)
+    - `GET /api/v1/analytics/tpo-dashboard` (`ROLE_TPO_ADMIN`)
+    - `GET /api/v1/analytics/export/placements` (`ROLE_TPO_ADMIN`)
+  - Authored comprehensive integration test suite `AnalyticsControllerIntegrationTest` (6 tests) validating student dashboard KPIs, recruiter drive metrics, TPO executive dashboard metrics, CSV master sheet download headers and contents, student authorization denial, and recruiter cross-role denial.
+  - All 87 tests in the project passing with 100% green status.
+- Files created/modified:
+  - `src/main/java/com/smartplacement/dto/analytics/DepartmentPlacementStatDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/analytics/SalaryDistributionDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/analytics/StudentDashboardDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/analytics/RecruiterDashboardDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/analytics/TpoDashboardDto.java` (Created)
+  - `src/main/java/com/smartplacement/service/AnalyticsService.java` (Created)
+  - `src/main/java/com/smartplacement/service/impl/AnalyticsServiceImpl.java` (Created)
+  - `src/main/java/com/smartplacement/controller/AnalyticsController.java` (Created)
+  - `src/main/java/com/smartplacement/repository/StudentRepository.java` (Modified)
+  - `src/main/java/com/smartplacement/repository/JobOfferRepository.java` (Modified)
+  - `src/main/java/com/smartplacement/repository/JobRepository.java` (Modified)
+  - `src/main/java/com/smartplacement/repository/ApplicationRepository.java` (Modified)
+  - `src/main/java/com/smartplacement/repository/InterviewRepository.java` (Modified)
+  - `src/main/java/com/smartplacement/repository/CompanyRepository.java` (Modified)
+  - `src/test/java/com/smartplacement/controller/AnalyticsControllerIntegrationTest.java` (Created)
+  - `AGENT_LOG.md` (Appended)
+- Why (design decision):
+  - Consolidating high-level placement KPIs directly in the database engine via targeted JPQL aggregation queries (`COUNT`, `SUM`, `AVG`, `MAX`) minimizes in-memory overhead and prevents full-table hydration. Streaming CSV reports directly via `ByteArrayOutputStream` with RFC 4180 escaping guarantees robust institutional spreadsheet compatibility with zero memory leaks.
+- How to run/test:
+  - Run `.\mvnw.cmd test` to execute all 87 unit and integration tests.
+  - Run `.\mvnw.cmd spring-boot:run` to launch the server on port 8080.
+- Git commit hash: 3d553cc (tag: phase-10-done)
+
 
 
 

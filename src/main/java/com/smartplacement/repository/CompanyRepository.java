@@ -21,4 +21,6 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
            "(:query IS NULL OR LOWER(c.name) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
            "LOWER(c.industry) LIKE LOWER(CONCAT('%', :query, '%')))")
     Page<Company> searchCompanies(@Param("query") String query, Pageable pageable);
+
+    long countByVerified(boolean verified);
 }

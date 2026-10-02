@@ -57,4 +57,9 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
             @Param("minCgpa") Double minCgpa,
             Pageable pageable
     );
+
+    long countByIsPlacedTrue();
+
+    @Query("SELECT s.branch, COUNT(s), SUM(CASE WHEN s.isPlaced = true THEN 1L ELSE 0L END) FROM Student s GROUP BY s.branch")
+    List<Object[]> getBranchWisePlacementCounts();
 }

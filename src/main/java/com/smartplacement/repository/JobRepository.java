@@ -50,4 +50,10 @@ public interface JobRepository extends JpaRepository<Job, Long> {
             "WHERE j.status = 'PUBLISHED' " +
             "AND j.applicationDeadline >= :now")
     Page<Job> findActiveOpenJobs(@Param("now") LocalDateTime now, Pageable pageable);
+
+    long countByStatus(JobStatus status);
+
+    long countByCompanyId(Long companyId);
+
+    long countByCompanyIdAndStatus(Long companyId, JobStatus status);
 }

@@ -48,4 +48,8 @@ public interface InterviewRepository extends JpaRepository<Interview, Long> {
             "WHERE a.job.id = :jobId " +
             "ORDER BY i.scheduledAt DESC")
     Page<Interview> findJobInterviewsWithDetails(@Param("jobId") Long jobId, Pageable pageable);
+
+    long countByApplicationStudentId(Long studentId);
+
+    long countByApplicationJobCompanyId(Long companyId);
 }
