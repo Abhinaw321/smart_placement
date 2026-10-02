@@ -46,6 +46,11 @@ public class StudentSkill extends BaseEntity {
     public StudentSkill() {
     }
 
+    public StudentSkill(String skillName, SkillProficiency proficiency) {
+        this.skillName = skillName;
+        this.proficiency = proficiency;
+    }
+
     public StudentSkill(Student student, String skillName, SkillProficiency proficiency) {
         this.student = student;
         this.skillName = skillName;

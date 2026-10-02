@@ -51,6 +51,9 @@ public class Company extends BaseEntity {
     @Column(name = "address", length = 255)
     private String address;
 
+    @Column(name = "verified", nullable = false)
+    private Boolean verified = false;
+
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
     private List<Recruiter> recruiters = new ArrayList<>();
 
@@ -138,6 +141,18 @@ public class Company extends BaseEntity {
 
     public void setRecruiters(List<Recruiter> recruiters) {
         this.recruiters = recruiters;
+    }
+
+    public Boolean isVerified() {
+        return verified != null && verified;
+    }
+
+    public Boolean getVerified() {
+        return verified;
+    }
+
+    public void setVerified(Boolean verified) {
+        this.verified = verified;
     }
 
     @Override

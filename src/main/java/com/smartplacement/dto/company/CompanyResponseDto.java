@@ -13,6 +13,7 @@ public class CompanyResponseDto {
     private String industry;
     private String logoUrl;
     private String address;
+    private boolean verified;
     private int recruiterCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -29,6 +30,7 @@ public class CompanyResponseDto {
         dto.setIndustry(company.getIndustry());
         dto.setLogoUrl(company.getLogoUrl());
         dto.setAddress(company.getAddress());
+        dto.setVerified(company.isVerified());
         dto.setRecruiterCount(company.getRecruiters() != null ? company.getRecruiters().size() : 0);
         dto.setCreatedAt(company.getCreatedAt());
         dto.setUpdatedAt(company.getUpdatedAt());
@@ -89,6 +91,14 @@ public class CompanyResponseDto {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public boolean isVerified() {
+        return verified;
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
     }
 
     public int getRecruiterCount() {

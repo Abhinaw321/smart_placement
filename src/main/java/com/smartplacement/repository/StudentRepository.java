@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -30,6 +31,18 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
      * Check existence by roll number to prevent duplicates.
      */
     boolean existsByRollNumber(String rollNumber);
+
+    /**
+     * Look up student profile by linked User ID with skills eagerly fetched.
+     */
+    @Query("SELECT s FROM Student s LEFT JOIN FETCH s.skills WHERE s.user.id = :userId")
+    Optional<Student> findByUserIdWithSkills(@Param("userId") Long userId);
+
+    /**
+     * Retrieve all students with skills eagerly fetched to prevent LazyInitializationException.
+     */
+    @Query("SELECT DISTINCT s FROM Student s LEFT JOIN FETCH s.skills")
+    List<Student> findAllWithSkills();
 
     /**
      * Flexible multi-criteria search for TPO Admin with pagination.

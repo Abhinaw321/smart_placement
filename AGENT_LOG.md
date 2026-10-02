@@ -187,7 +187,66 @@
 - How to run/test:
   - Run `.\mvnw.cmd test` to execute all 39 tests.
   - Run `.\mvnw.cmd spring-boot:run` to launch the server on port 8080.
-- Git commit hash: 972d8fc (tag: phase-5-done)
+- Git commit hash: d170bcd (tag: phase-5-done)
+
+## [Phase 6] Job Posting & Pluggable Rule-Based Eligibility Engine — 2026-10-02 15:31 IST
+- What was done:
+  - Designed domain entities: `Job`, `EligibilityCriteria`, and enums `JobType` (`FULL_TIME`, `INTERNSHIP`, `INTERN_PLUS_FULL_TIME`) and `JobStatus` (`DRAFT`, `PUBLISHED`, `CLOSED`, `ARCHIVED`).
+  - Built the Strategy-Pattern Pluggable Rule-Based Eligibility Engine under `com.smartplacement.engine.eligibility`:
+    - Core interface: `EligibilityCriteriaEvaluator` with `getCriterionName()`, `isApplicable()`, and `evaluate()`.
+    - Pluggable Evaluators: `CgpaEvaluator`, `BacklogEvaluator` (active & historical backlog thresholds), `BranchEvaluator` (department matching), `GraduationYearEvaluator` (batch matching), `SecondaryEducationEvaluator` (10th/12th/lateral diploma percentages), `SkillSetEvaluator` (mandatory candidate technical skills), and `GapYearEvaluator` (study/career gap years).
+    - Master Coordinator: `EligibilityEngine` injecting all registered evaluator beans, compiling granular `CriterionEvaluationResult` items into `EligibilityReportDto` with explicit rejection explanations.
+  - Implemented Spring Data JPA repositories: `JobRepository` (with custom JPQL dynamic multi-attribute search and fetch queries) and `EligibilityCriteriaRepository`.
+  - Created DTO suite: `EligibilityCriteriaDto`, `JobCreateRequestDto`, `JobUpdateRequestDto`, `JobResponseDto`, and `StudentEligibilityCheckResponseDto`.
+  - Built `JobService` and `JobServiceImpl` handling job creation (with unverified company guard), updating, paginated search, lifecycle status changes, student real-time eligibility evaluation, and campus-wide eligible candidate pool queries.
+  - Implemented REST controller `JobController` (`/api/v1/jobs`) with endpoints: `POST /api/v1/jobs`, `PUT /api/v1/jobs/{id}`, `GET /api/v1/jobs/{id}`, `GET /api/v1/jobs`, `GET /api/v1/jobs/company/{companyId}`, `PATCH /api/v1/jobs/{id}/status`, `GET /api/v1/jobs/{id}/my-eligibility`, and `GET /api/v1/jobs/{id}/eligible-candidates`.
+  - Authored comprehensive test suites:
+    - `EligibilityEngineTest` (10 unit tests verifying all evaluators, lateral diploma logic, and multi-reason composite rejection).
+    - `JobControllerIntegrationTest` (9 integration tests verifying recruiter posting, unverified company barriers, role barriers, student eligibility checks with explicit rejection reasons, and eligible candidate pool queries).
+  - All 58 tests in the system passing with 100% green status.
+- Files created/modified:
+  - `src/main/java/com/smartplacement/entity/JobType.java` (Created)
+  - `src/main/java/com/smartplacement/entity/JobStatus.java` (Created)
+  - `src/main/java/com/smartplacement/entity/EligibilityCriteria.java` (Created)
+  - `src/main/java/com/smartplacement/entity/Job.java` (Created)
+  - `src/main/java/com/smartplacement/entity/Company.java` (Modified)
+  - `src/main/java/com/smartplacement/entity/StudentSkill.java` (Modified)
+  - `src/main/java/com/smartplacement/dto/company/CompanyResponseDto.java` (Modified)
+  - `src/main/java/com/smartplacement/dto/job/EligibilityCriteriaDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/job/JobCreateRequestDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/job/JobUpdateRequestDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/job/JobResponseDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/job/StudentEligibilityCheckResponseDto.java` (Created)
+  - `src/main/java/com/smartplacement/engine/eligibility/CriterionEvaluationResult.java` (Created)
+  - `src/main/java/com/smartplacement/engine/eligibility/EligibilityReportDto.java` (Created)
+  - `src/main/java/com/smartplacement/engine/eligibility/evaluator/EligibilityCriteriaEvaluator.java` (Created)
+  - `src/main/java/com/smartplacement/engine/eligibility/evaluator/CgpaEvaluator.java` (Created)
+  - `src/main/java/com/smartplacement/engine/eligibility/evaluator/BacklogEvaluator.java` (Created)
+  - `src/main/java/com/smartplacement/engine/eligibility/evaluator/BranchEvaluator.java` (Created)
+  - `src/main/java/com/smartplacement/engine/eligibility/evaluator/GraduationYearEvaluator.java` (Created)
+  - `src/main/java/com/smartplacement/engine/eligibility/evaluator/SecondaryEducationEvaluator.java` (Created)
+  - `src/main/java/com/smartplacement/engine/eligibility/evaluator/SkillSetEvaluator.java` (Created)
+  - `src/main/java/com/smartplacement/engine/eligibility/evaluator/GapYearEvaluator.java` (Created)
+  - `src/main/java/com/smartplacement/engine/eligibility/EligibilityEngine.java` (Created)
+  - `src/main/java/com/smartplacement/repository/JobRepository.java` (Created)
+  - `src/main/java/com/smartplacement/repository/EligibilityCriteriaRepository.java` (Created)
+  - `src/main/java/com/smartplacement/repository/StudentRepository.java` (Modified)
+  - `src/main/java/com/smartplacement/service/JobService.java` (Created)
+  - `src/main/java/com/smartplacement/service/impl/JobServiceImpl.java` (Created)
+  - `src/main/java/com/smartplacement/controller/JobController.java` (Created)
+  - `src/test/java/com/smartplacement/engine/EligibilityEngineTest.java` (Created)
+  - `src/test/java/com/smartplacement/controller/JobControllerIntegrationTest.java` (Created)
+  - `src/test/java/com/smartplacement/controller/AuthControllerIntegrationTest.java` (Modified)
+  - `src/test/java/com/smartplacement/controller/StudentControllerIntegrationTest.java` (Modified)
+  - `src/test/java/com/smartplacement/controller/CompanyControllerIntegrationTest.java` (Modified)
+  - `AGENT_LOG.md` (Appended)
+- Why (design decision):
+  - Adopting the Strategy Pattern completely decouples each eligibility rule into an independent, testable unit adhering to the Open/Closed Principle. Adding future criteria (such as entrance exam percentiles or project portfolio thresholds) requires creating a single new `@Component` class without touching the core `EligibilityEngine` or `JobService`. Providing explicit rejection reasons directly empowers students to understand why they are disqualified before applying.
+- How to run/test:
+  - Run `.\mvnw.cmd test` to execute all 58 unit and integration tests.
+  - Run `.\mvnw.cmd spring-boot:run` to launch the server on port 8080.
+- Git commit hash: 932d0ce (tag: phase-6-done)
+
 
 
 
