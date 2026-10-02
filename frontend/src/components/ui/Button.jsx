@@ -3,16 +3,16 @@ import React from 'react';
 export default function Button({
   children,
   variant = 'primary', // 'primary' | 'secondary' | 'ghost' | 'danger'
-  size = 'md',         // 'sm' | 'md' | 'lg'
+  size = 'md',         // 'sm' | 'md'
   disabled = false,
   loading = false,
   icon: Icon,
   className = '',
   style = {},
+  type = 'button',
   ...props
 }) {
   const getStyles = () => {
-    // Base styles
     const base = {
       display: 'inline-flex',
       alignItems: 'center',
@@ -31,21 +31,19 @@ export default function Button({
       textDecoration: 'none',
       userSelect: 'none',
       whiteSpace: 'nowrap',
+      lineHeight: 1,
     };
 
-    // Sizes
     const sizes = {
-      sm: { padding: '0.35rem 0.65rem', fontSize: '0.78rem', height: '30px' },
-      md: { padding: '0.5rem 0.95rem', fontSize: '0.84rem', height: '36px' },
-      lg: { padding: '0.65rem 1.25rem', fontSize: '0.9rem', height: '42px' },
+      sm: { height: '32px', padding: '0 0.75rem', fontSize: '0.78rem' },
+      md: { height: '40px', padding: '0 1rem', fontSize: '0.86rem' },
     };
 
-    // Variants
     let variantStyles = {};
     if (variant === 'primary') {
       variantStyles = {
         background: 'var(--accent)',
-        color: 'var(--accent-fg)',
+        color: '#0A0A0B',
         fontWeight: 600,
         borderColor: 'var(--accent)',
       };
@@ -74,9 +72,10 @@ export default function Button({
 
   return (
     <button
+      type={type}
       disabled={disabled || loading}
       style={getStyles()}
-      className={`btn-interactive ${className}`}
+      className={`btn-ui ${className}`}
       {...props}
     >
       {loading ? (

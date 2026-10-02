@@ -674,4 +674,55 @@
   - `AGENT_LOG.md` (Appended)
 - Git commit hash: 3c980d8 (branch: experiment/ui-redesign-v2)
 
+## [UI Redesign - Phase 3] Full Design System & Recruiter Pages Redesign — 2026-10-02 23:51 IST
+- What was done:
+  - Built complete suite of reusable UI primitives in `src/components/ui/`:
+    - `Button.jsx`: Primary (lime `#C6FF3D`, black text), Secondary (1px border), Ghost, Danger, sm/md sizes, loading state with spinner.
+    - `Input.jsx`, `Select.jsx`, `Textarea.jsx`, `DatePicker.jsx`: Dark surface `#141416`, 1px border `#26262B`, `rounded-lg` (`8px`), `h-10` (`40px`), `px-3`, focus ring in accent, native controls styled with `color-scheme: dark`.
+    - `FormField.jsx` & `FormSection`: Clean label above input (sentence case, muted text), helper and error text below, dividers.
+    - `DataTable.jsx`: Sticky header, small muted uppercase column text, fixed aligned columns, row padding `py-3 px-4`, 1px row dividers, row hover surface, right-aligned action column, built-in empty state, skeleton loading, and checkbox row selection.
+    - `StatusBadge.jsx`: Maps all backend enums to human labels ("Technical interview", "HR interview", "Online test", "Shortlisted", "Selected", "Offer sent", "Rejected", "Applied", "Eligible", "Not eligible") with soft tinted colors. Zero raw enums displayed anywhere.
+    - `Modal.jsx`: Centered dialog with backdrop, Escape key listener, title, description, and primary/secondary action buttons.
+    - `Tabs.jsx`: Segmented switcher with item counters.
+    - `Toast.jsx`: Lightweight toast notification context and viewport toast container.
+    - `Sidebar.jsx`: 240px fixed left sidebar with role-specific navigation for Student, Recruiter, and Admin.
+    - `PageHeader.jsx`: Title on left, primary action button, notification bell with unread dot, and user avatar on right.
+  - Created temporary `/design-preview` route and visually verified all UI states via headless Chrome screenshot (`design_preview_screenshot.png`).
+  - Redesigned Recruiter Candidates page:
+    - Single-row filter bar: search input, placement drives select, pipeline stage select.
+    - Bulk action bar with selected candidate counter, "Bulk shortlist", and "Bulk reject".
+    - `DataTable` with Candidate (name + email), Branch, CGPA, Applied for, Stage (`StatusBadge`), Applied on, and Actions.
+    - Modal workflows for "Move stage", "Schedule interview", and "Extend offer".
+  - Redesigned Recruiter Post a drive page:
+    - 2-column form in 3 sections: "Role details", "Package and dates", and "Who can apply".
+    - Plain language eligibility rules (Minimum CGPA, Max active backlogs, Allowed branches as clickable chips, Required skills as tag input, Graduation year).
+    - Live eligibility preview card: "42 of 120 registered campus students are eligible" with lime progress bar and cutoff summary.
+    - Zero technical jargon (no mention of "Strategy Pattern" or "Eligibility Engine").
+  - Captured and visually verified screenshots for all 4 key screens:
+    1. Login page (`login_preview.png`)
+    2. Student Overview (`student_overview_preview.png`)
+    3. Recruiter Candidates page (`recruiter_candidates_preview.png`)
+    4. Recruiter Post-a-drive page (`recruiter_post_drive_preview.png`)
+- Files created/modified:
+  - `frontend/src/index.css` (Modified)
+  - `frontend/src/App.jsx` (Modified)
+  - `frontend/src/components/ui/Button.jsx` (Modified)
+  - `frontend/src/components/ui/Input.jsx` (Modified)
+  - `frontend/src/components/ui/Select.jsx` (Created)
+  - `frontend/src/components/ui/Textarea.jsx` (Created)
+  - `frontend/src/components/ui/DatePicker.jsx` (Created)
+  - `frontend/src/components/ui/FormField.jsx` (Created)
+  - `frontend/src/components/ui/DataTable.jsx` (Created)
+  - `frontend/src/components/ui/StatusBadge.jsx` (Created)
+  - `frontend/src/components/ui/Modal.jsx` (Created)
+  - `frontend/src/components/ui/Tabs.jsx` (Created)
+  - `frontend/src/components/ui/Toast.jsx` (Created)
+  - `frontend/src/components/ui/Sidebar.jsx` (Modified)
+  - `frontend/src/components/ui/PageHeader.jsx` (Modified)
+  - `frontend/src/pages/DesignPreviewPage.jsx` (Created)
+  - `frontend/src/pages/RecruiterPortal.jsx` (Modified)
+  - `AGENT_LOG.md` (Appended)
+- Git commit hash: pending commit (branch: experiment/ui-redesign-v2)
+
+
 

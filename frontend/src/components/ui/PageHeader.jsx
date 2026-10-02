@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Bell, User } from 'lucide-react';
+import { Bell } from 'lucide-react';
 import NotificationDropdown from '../NotificationDropdown';
+import Button from './Button';
 import { notificationApi } from '../../services/api';
 
 export default function PageHeader({
   title,
   subtitle,
+  action, // { label, onClick, icon, variant }
   user,
   onLogout,
   className = '',
@@ -36,18 +38,20 @@ export default function PageHeader({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingBottom: '1.5rem',
-        marginBottom: '1.5rem',
+        paddingBottom: '1.25rem',
+        marginBottom: '1.75rem',
         borderBottom: '1px solid var(--border)',
+        gap: '1rem',
+        flexWrap: 'wrap',
         ...style,
       }}
       className={className}
     >
-      {/* Left: Page Title & optional Subtitle */}
+      {/* Left: Page Title & Subtitle */}
       <div>
         <h1
           style={{
-            fontSize: '1.5rem',
+            fontSize: '1.65rem',
             fontWeight: 700,
             color: 'var(--text)',
             letterSpacing: '-0.03em',
@@ -61,7 +65,7 @@ export default function PageHeader({
             style={{
               fontSize: '0.84rem',
               color: 'var(--text-muted)',
-              marginTop: '0.2rem',
+              marginTop: '0.25rem',
             }}
           >
             {subtitle}
@@ -69,16 +73,28 @@ export default function PageHeader({
         )}
       </div>
 
-      {/* Right: Notification Bell & Avatar */}
+      {/* Right: Primary action button + Notification bell + Avatar */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', position: 'relative' }}>
+        {action && (
+          <Button
+            variant={action.variant || 'primary'}
+            size="md"
+            icon={action.icon}
+            onClick={action.onClick}
+          >
+            {action.label}
+          </Button>
+        )}
+
         {/* Bell Button */}
         <div style={{ position: 'relative' }}>
           <button
+            type="button"
             id="notification-bell-btn"
             onClick={() => setShowNotifications(!showNotifications)}
             style={{
-              width: '36px',
-              height: '36px',
+              width: '38px',
+              height: '38px',
               borderRadius: 'var(--radius-md)',
               background: 'var(--surface)',
               border: '1px solid var(--border)',
@@ -96,8 +112,8 @@ export default function PageHeader({
               <span
                 style={{
                   position: 'absolute',
-                  top: '6px',
-                  right: '6px',
+                  top: '7px',
+                  right: '7px',
                   width: '6px',
                   height: '6px',
                   borderRadius: '50%',
@@ -112,14 +128,14 @@ export default function PageHeader({
           )}
         </div>
 
-        {/* User Pill / Avatar */}
+        {/* User Pill */}
         {user && (
           <div
             style={{
               display: 'flex',
               alignItems: 'center',
               gap: '0.5rem',
-              padding: '0.3rem 0.65rem 0.3rem 0.4rem',
+              padding: '0.35rem 0.65rem 0.35rem 0.45rem',
               borderRadius: 'var(--radius-md)',
               background: 'var(--surface)',
               border: '1px solid var(--border)',
@@ -144,7 +160,7 @@ export default function PageHeader({
             </div>
             <span
               style={{
-                fontSize: '0.78rem',
+                fontSize: '0.8rem',
                 fontWeight: 500,
                 color: 'var(--text)',
                 maxWidth: '120px',

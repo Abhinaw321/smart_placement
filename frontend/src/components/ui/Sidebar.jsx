@@ -6,18 +6,43 @@ import {
   Calendar,
   Award,
   User,
+  Users,
+  Building2,
+  GraduationCap,
+  BarChart3,
+  Shield,
+  PlusCircle,
   LogOut,
   Compass,
 } from 'lucide-react';
 
-const NAV_ITEMS = [
-  { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-  { id: 'drives', label: 'Drives', icon: Briefcase },
-  { id: 'applications', label: 'Applications', icon: FileText },
-  { id: 'interviews', label: 'Interviews', icon: Calendar },
-  { id: 'offers', label: 'Offers', icon: Award },
-  { id: 'profile', label: 'Profile & Resume', icon: User },
-];
+const ROLE_NAV_ITEMS = {
+  ROLE_STUDENT: [
+    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+    { id: 'drives', label: 'Drives', icon: Briefcase },
+    { id: 'applications', label: 'Applications', icon: FileText },
+    { id: 'interviews', label: 'Interviews', icon: Calendar },
+    { id: 'offers', label: 'Offers', icon: Award },
+    { id: 'profile', label: 'Profile', icon: User },
+  ],
+  ROLE_RECRUITER: [
+    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+    { id: 'post_drive', label: 'Post a drive', icon: PlusCircle },
+    { id: 'my_drives', label: 'My drives', icon: Briefcase },
+    { id: 'candidates', label: 'Candidates', icon: Users },
+    { id: 'interviews', label: 'Interviews', icon: Calendar },
+    { id: 'offers', label: 'Offers', icon: Award },
+  ],
+  ROLE_TPO_ADMIN: [
+    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+    { id: 'students', label: 'Students', icon: GraduationCap },
+    { id: 'companies', label: 'Companies', icon: Building2 },
+    { id: 'drives', label: 'Drives', icon: Briefcase },
+    { id: 'applications', label: 'Applications', icon: FileText },
+    { id: 'reports', label: 'Reports', icon: BarChart3 },
+    { id: 'audit_logs', label: 'Audit logs', icon: Shield },
+  ],
+};
 
 export default function Sidebar({
   activeTab = 'overview',
@@ -27,6 +52,15 @@ export default function Sidebar({
   className = '',
   style = {},
 }) {
+  const role = user?.role || 'ROLE_STUDENT';
+  const navItems = ROLE_NAV_ITEMS[role] || ROLE_NAV_ITEMS.ROLE_STUDENT;
+
+  const getRoleLabel = () => {
+    if (role === 'ROLE_TPO_ADMIN') return 'TPO Administration';
+    if (role === 'ROLE_RECRUITER') return 'Corporate Recruiter';
+    return 'Candidate Portal';
+  };
+
   return (
     <aside
       style={{
@@ -86,20 +120,21 @@ export default function Sidebar({
               PlacementOS
             </div>
             <div style={{ fontSize: '0.65rem', color: 'var(--text-subtle)' }}>
-              Campus System
+              {getRoleLabel()}
             </div>
           </div>
         </div>
 
         {/* Navigation List */}
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-          {NAV_ITEMS.map((item) => {
+          {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
 
             return (
               <button
                 key={item.id}
+                type="button"
                 onClick={() => onTabChange && onTabChange(item.id)}
                 style={{
                   display: 'flex',
@@ -216,6 +251,7 @@ export default function Sidebar({
           </div>
 
           <button
+            type="button"
             onClick={onLogout}
             title="Sign out"
             style={{
