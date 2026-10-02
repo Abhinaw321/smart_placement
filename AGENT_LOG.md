@@ -149,7 +149,46 @@
   - Storing uploaded resumes outside public web roots with UUID-sanitized filenames completely defeats directory traversal and script injection vulnerabilities. Managing student skills, projects, and certifications via JPA composite associations (`orphanRemoval = true`) ensures data consistency without orphaned records in child tables. Automatic student profile instantiation during auth registration guarantees 1-to-1 parity between security credentials and candidate records.
 - How to run/test:
   - Run `.\mvnw.cmd test` to execute all 31 tests.
-  - Run `.\mvnw.cmd spring-boot:run` to launch the server on port 8080.
 - Git commit hash: edbedcb (tag: phase-4-done)
+
+## [Phase 5] Company & Recruiter Profile Management — 2026-10-02 15:18 IST
+- What was done:
+  - Designed and implemented `Company` persistent entity with company name, industry, website, description, logo URL, headquarters location, verified status flag, and recruiters list (`@OneToMany`).
+  - Designed and implemented `Recruiter` persistent entity with 1-to-1 association with `User`, many-to-one association with `Company`, designation, department, and contact number.
+  - Created `CompanyRepository` featuring custom JPQL dynamic multi-attribute search (`searchCompanies` querying name, industry, location, and verified flag with pagination) and `RecruiterRepository`.
+  - Created request/response DTOs: `CompanyRequestDto` (with Jakarta validation constraints), `CompanyResponseDto`, `RecruiterProfileResponseDto`, and `RecruiterUpdateDto`.
+  - Implemented `CompanyService` and `CompanyServiceImpl` handling company creation, updating, retrieval with pagination, search, recruiter listing, and TPO-authorized verification workflows.
+  - Implemented `RecruiterService` and `RecruiterServiceImpl` handling authenticated recruiter profile retrieval, profile updates, and recruiter lookups.
+  - Updated `AuthServiceImpl.registerRecruiter` to seamlessly resolve or instantiate the target company and persist the linked `Recruiter` profile during onboarding.
+  - Built REST controllers: `CompanyController` (`/api/v1/companies`) and `RecruiterController` (`/api/v1/recruiters/me`) secured with RBAC (`@PreAuthorize`).
+  - Created comprehensive integration test suite `CompanyControllerIntegrationTest` (8 tests) validating company onboarding, recruiter profile updates, TPO verification, public search, and role-based security barriers. All 39 tests in project passing.
+- Files created/modified:
+  - `src/main/java/com/smartplacement/entity/Company.java` (Created)
+  - `src/main/java/com/smartplacement/entity/Recruiter.java` (Created)
+  - `src/main/java/com/smartplacement/repository/CompanyRepository.java` (Created)
+  - `src/main/java/com/smartplacement/repository/RecruiterRepository.java` (Created)
+  - `src/main/java/com/smartplacement/dto/company/CompanyRequestDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/company/CompanyResponseDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/company/RecruiterProfileResponseDto.java` (Created)
+  - `src/main/java/com/smartplacement/dto/company/RecruiterUpdateDto.java` (Created)
+  - `src/main/java/com/smartplacement/service/CompanyService.java` (Created)
+  - `src/main/java/com/smartplacement/service/impl/CompanyServiceImpl.java` (Created)
+  - `src/main/java/com/smartplacement/service/RecruiterService.java` (Created)
+  - `src/main/java/com/smartplacement/service/impl/RecruiterServiceImpl.java` (Created)
+  - `src/main/java/com/smartplacement/controller/CompanyController.java` (Created)
+  - `src/main/java/com/smartplacement/controller/RecruiterController.java` (Created)
+  - `src/main/java/com/smartplacement/service/impl/AuthServiceImpl.java` (Modified)
+  - `src/test/java/com/smartplacement/controller/CompanyControllerIntegrationTest.java` (Created)
+  - `src/test/java/com/smartplacement/controller/AuthControllerIntegrationTest.java` (Modified)
+  - `src/test/java/com/smartplacement/controller/StudentControllerIntegrationTest.java` (Modified)
+  - `AGENT_LOG.md` (Appended)
+- Why (design decision):
+  - Decoupling company verification ensures unvetted recruiters cannot immediately post listings or contact students without TPO approval. Linking recruiters to companies via standard JPA relationships allows multiple hiring managers and campus representatives from the same organization to collaborate under a unified corporate profile.
+- How to run/test:
+  - Run `.\mvnw.cmd test` to execute all 39 tests.
+  - Run `.\mvnw.cmd spring-boot:run` to launch the server on port 8080.
+- Git commit hash: 972d8fc (tag: phase-5-done)
+
+
 
 

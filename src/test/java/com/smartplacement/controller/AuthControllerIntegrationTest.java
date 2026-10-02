@@ -37,12 +37,20 @@ class AuthControllerIntegrationTest {
     private com.smartplacement.repository.StudentRepository studentRepository;
 
     @Autowired
+    private com.smartplacement.repository.RecruiterRepository recruiterRepository;
+
+    @Autowired
+    private com.smartplacement.repository.CompanyRepository companyRepository;
+
+    @Autowired
     private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     @BeforeEach
     void cleanUp() {
-        // Clean up students first to satisfy foreign key constraints, then users
+        // Clean up child tables first to satisfy foreign key constraints, then parent tables
         studentRepository.deleteAll();
+        recruiterRepository.deleteAll();
+        companyRepository.deleteAll();
         userRepository.deleteAll();
 
         // Reseed default admin account

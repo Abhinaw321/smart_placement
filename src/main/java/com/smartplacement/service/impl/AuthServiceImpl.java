@@ -36,6 +36,8 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final com.smartplacement.repository.StudentRepository studentRepository;
+    private final com.smartplacement.repository.CompanyRepository companyRepository;
+    private final com.smartplacement.repository.RecruiterRepository recruiterRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider tokenProvider;
 
@@ -43,11 +45,15 @@ public class AuthServiceImpl implements AuthService {
             AuthenticationManager authenticationManager,
             UserRepository userRepository,
             com.smartplacement.repository.StudentRepository studentRepository,
+            com.smartplacement.repository.CompanyRepository companyRepository,
+            com.smartplacement.repository.RecruiterRepository recruiterRepository,
             PasswordEncoder passwordEncoder,
             JwtTokenProvider tokenProvider) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
         this.studentRepository = studentRepository;
+        this.companyRepository = companyRepository;
+        this.recruiterRepository = recruiterRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenProvider = tokenProvider;
     }
@@ -139,13 +145,28 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public AuthResponseDto registerRecruiter(RecruiterRegisterRequestDto request) {
         String normalizedEmail = request.getEmail().trim().toLowerCase();
-        log.info("Registering recruiter with email: {}", normalizedEmail);
+        String companyName = request.getCompanyName().trim();
+        log.info("Registering recruiter with email: {} for company: {}", normalizedEmail, companyName);
 
         if (userRepository.existsByEmail(normalizedEmail)) {
             throw new BadRequestException("An account is already registered with email: " + normalizedEmail);
         }
 
-        // Create base User account with encoded password and ROLE_RECRUITER
+        // 1. Find existing company or create new
+        com.smartplacement.entity.Company company = companyRepository.findByNameIgnoreCase(companyName)
+                .orElseGet(() -> {
+                    com.smartplacement.entity.Company newComp = new com.smartplacement.entity.Company(
+                            companyName,
+                            null,
+                            null,
+                            "Technology",
+                            null,
+                            null
+                    );
+                    return companyRepository.save(newComp);
+                });
+
+        // 2. Create base User account with encoded password and ROLE_RECRUITER
         User user = new User(
                 normalizedEmail,
                 passwordEncoder.encode(request.getPassword()),
@@ -154,7 +175,18 @@ public class AuthServiceImpl implements AuthService {
         );
 
         User savedUser = userRepository.save(user);
-        log.info("Recruiter user created with ID: {}", savedUser.getId());
+        log.info("Recruiter user credentials created with ID: {}", savedUser.getId());
+
+        // 3. Create linked Recruiter profile
+        com.smartplacement.entity.Recruiter recruiter = new com.smartplacement.entity.Recruiter(
+                savedUser,
+                company,
+                request.getDesignation().trim(),
+                request.getPhone().trim()
+        );
+
+        com.smartplacement.entity.Recruiter savedRecruiter = recruiterRepository.save(recruiter);
+        log.info("Recruiter domain profile created with ID: {}", savedRecruiter.getId());
 
         String jwt = tokenProvider.generateTokenForUser(savedUser);
 

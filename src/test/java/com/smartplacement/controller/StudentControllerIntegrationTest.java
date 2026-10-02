@@ -58,6 +58,12 @@ class StudentControllerIntegrationTest {
     private StudentCertificationRepository certificationRepository;
 
     @Autowired
+    private com.smartplacement.repository.RecruiterRepository recruiterRepository;
+
+    @Autowired
+    private com.smartplacement.repository.CompanyRepository companyRepository;
+
+    @Autowired
     private org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     private String studentToken;
@@ -70,6 +76,8 @@ class StudentControllerIntegrationTest {
         projectRepository.deleteAll();
         skillRepository.deleteAll();
         studentRepository.deleteAll();
+        recruiterRepository.deleteAll();
+        companyRepository.deleteAll();
         userRepository.deleteAll();
 
         // Reseed admin account
