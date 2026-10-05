@@ -23,8 +23,6 @@ import com.smartplacement.repository.RecruiterRepository;
 import com.smartplacement.repository.StudentRepository;
 import com.smartplacement.security.UserPrincipal;
 import com.smartplacement.service.AnalyticsService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -42,8 +40,6 @@ import java.util.List;
  */
 @Service
 public class AnalyticsServiceImpl implements AnalyticsService {
-
-    private static final Logger log = LoggerFactory.getLogger(AnalyticsServiceImpl.class);
 
     private final StudentRepository studentRepository;
     private final RecruiterRepository recruiterRepository;

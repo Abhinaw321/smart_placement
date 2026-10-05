@@ -5,7 +5,6 @@ import com.smartplacement.entity.ApplicationStatus;
 import com.smartplacement.entity.Company;
 import com.smartplacement.entity.EligibilityCriteria;
 import com.smartplacement.entity.Interview;
-import com.smartplacement.entity.InterviewStatus;
 import com.smartplacement.entity.InterviewType;
 import com.smartplacement.entity.Job;
 import com.smartplacement.entity.JobOffer;
@@ -22,7 +21,6 @@ import com.smartplacement.entity.User;
 import com.smartplacement.entity.UserStatus;
 import com.smartplacement.repository.ApplicationRepository;
 import com.smartplacement.repository.CompanyRepository;
-import com.smartplacement.repository.EligibilityCriteriaRepository;
 import com.smartplacement.repository.InterviewRepository;
 import com.smartplacement.repository.JobOfferRepository;
 import com.smartplacement.repository.JobRepository;
@@ -58,7 +56,6 @@ public class DataInitializer implements CommandLineRunner {
     private final StudentRepository studentRepository;
     private final StudentSkillRepository skillRepository;
     private final JobRepository jobRepository;
-    private final EligibilityCriteriaRepository eligibilityCriteriaRepository;
     private final ApplicationRepository applicationRepository;
     private final InterviewRepository interviewRepository;
     private final JobOfferRepository jobOfferRepository;
@@ -72,7 +69,6 @@ public class DataInitializer implements CommandLineRunner {
                            StudentRepository studentRepository,
                            StudentSkillRepository skillRepository,
                            JobRepository jobRepository,
-                           EligibilityCriteriaRepository eligibilityCriteriaRepository,
                            ApplicationRepository applicationRepository,
                            InterviewRepository interviewRepository,
                            JobOfferRepository jobOfferRepository,
@@ -85,7 +81,6 @@ public class DataInitializer implements CommandLineRunner {
         this.studentRepository = studentRepository;
         this.skillRepository = skillRepository;
         this.jobRepository = jobRepository;
-        this.eligibilityCriteriaRepository = eligibilityCriteriaRepository;
         this.applicationRepository = applicationRepository;
         this.interviewRepository = interviewRepository;
         this.jobOfferRepository = jobOfferRepository;

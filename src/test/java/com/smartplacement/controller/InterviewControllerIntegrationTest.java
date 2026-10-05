@@ -1,12 +1,10 @@
 package com.smartplacement.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.smartplacement.dto.application.ApplicationResponseDto;
 import com.smartplacement.dto.auth.AuthResponseDto;
 import com.smartplacement.dto.auth.LoginRequestDto;
 import com.smartplacement.dto.auth.RecruiterRegisterRequestDto;
 import com.smartplacement.dto.auth.StudentRegisterRequestDto;
-import com.smartplacement.dto.interview.InterviewResponseDto;
 import com.smartplacement.dto.interview.InterviewResultDto;
 import com.smartplacement.dto.interview.ScheduleInterviewRequestDto;
 import com.smartplacement.dto.job.EligibilityCriteriaDto;
@@ -14,7 +12,6 @@ import com.smartplacement.dto.job.JobCreateRequestDto;
 import com.smartplacement.entity.Application;
 import com.smartplacement.entity.ApplicationStatus;
 import com.smartplacement.entity.Company;
-import com.smartplacement.entity.InterviewStatus;
 import com.smartplacement.entity.InterviewType;
 import com.smartplacement.entity.JobStatus;
 import com.smartplacement.entity.JobType;
@@ -50,7 +47,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;

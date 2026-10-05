@@ -32,14 +32,12 @@ public class JwtTokenProvider {
 
     private static final Logger log = LoggerFactory.getLogger(JwtTokenProvider.class);
 
-    private final String jwtSecret;
     private final long jwtExpirationMs;
     private final SecretKey key;
 
     public JwtTokenProvider(
             @Value("${app.jwt.secret}") String jwtSecret,
             @Value("${app.jwt.expiration-ms}") long jwtExpirationMs) {
-        this.jwtSecret = jwtSecret;
         this.jwtExpirationMs = jwtExpirationMs;
         this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }

@@ -12,7 +12,6 @@ import com.smartplacement.dto.job.JobCreateRequestDto;
 import com.smartplacement.entity.Application;
 import com.smartplacement.entity.ApplicationStatus;
 import com.smartplacement.entity.Company;
-import com.smartplacement.entity.Job;
 import com.smartplacement.entity.JobStatus;
 import com.smartplacement.entity.JobType;
 import com.smartplacement.entity.Role;
@@ -46,7 +45,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Collections;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
