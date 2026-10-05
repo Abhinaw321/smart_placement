@@ -724,5 +724,30 @@
   - `AGENT_LOG.md` (Appended)
 - Git commit hash: 24f7fc4 (branch: experiment/ui-redesign-v2)
 
+## [UI Redesign - Phase 4] TPO Admin Portal Redesign & Full System Unification — 2026-10-05 10:46 IST
+- What was done:
+  - Redesigned `TpoAdminPortal.jsx` from scratch using the Linear/Raycast design system:
+    - Removed all legacy CSS classes (`glass-card`, `btn btn-primary`, `badge badge-warning`).
+    - Unified the layout with the 240px fixed left `Sidebar` and `PageHeader`.
+    - Implemented all 7 role tabs declared in `Sidebar.jsx`:
+      1. `overview`: Institutional executive analytics with 5 `StatCard` metrics (Placement Rate, Highest CTC, Average CTC, Verified Partners, Total Offers), Department-wise placement rate progress bars, Salary Tier breakdown (Super Dream, Dream, Regular Plus, Standard Base), active drives feed, and 1-click statutory compliance export.
+      2. `students`: Searchable student database with `DataTable`, branch filter dropdown, placement status filter, verified skills badges, and student academic profile inspection `Modal` with resume link.
+      3. `companies`: Corporate partner directory with `DataTable`, search by name/industry/location, website external links, verification status (`StatusBadge`), and 1-click "Verify partner" button with optimistic UI state update.
+      4. `drives`: Campus placement drives directory with `DataTable`, CTC highlights, deadlines, and quick jump to applicants pipeline.
+      5. `applications`: Multi-drive candidate applications pipeline with `DataTable`, drive filter selector, candidate search, and detailed stage indicators.
+      6. `reports`: Institutional intelligence reporting suite with prominent NAAC / NIRF master placement CSV exporter, department-wise progress table, and metric summaries.
+      7. `audit_logs`: Security and regulatory audit trail with `DataTable`, timestamp formatting, monospace action pills, performer email, entity ID tracking, and IP logging.
+  - Connected `App.jsx` `PageHeader` action:
+    - Automatically surfaces a secondary "Export report (CSV)" action button in the top bar when the TPO Admin is on `overview` or `reports` tabs.
+    - Uses non-blocking CustomEvent listener `tpo:export-csv` to trigger instant file download.
+  - Verified full frontend build with Vite: production bundle built cleanly with 0 errors.
+  - Verified backend compilation with Maven: build success on Java 25.
+- Files created/modified:
+  - `frontend/src/pages/TpoAdminPortal.jsx` (Modified)
+  - `frontend/src/App.jsx` (Modified)
+  - `AGENT_LOG.md` (Appended)
+- Git commit hash: 5946cb6 (branch: experiment/ui-redesign-v2)
+
+
 
 
