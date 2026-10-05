@@ -39,8 +39,8 @@ spring:
 # Application-specific Custom Properties
 app:
   jwt:
-    secret: 9a6747f3a73c7dc852d499ba79478f7e175cf0228254b025b07765ecd1bdf961
-    expiration-ms: 86400000 # 24 hours in milliseconds
+    secret: ${JWT_SECRET:dev_placeholder_jwt_secret_key_must_be_at_least_256_bits_for_hmac_sha256_security_000}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000} # 24 hours in milliseconds
   upload:
     dir: ./uploads
 

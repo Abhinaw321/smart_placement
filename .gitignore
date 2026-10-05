@@ -1,7 +1,11 @@
 target/
 node_modules/
+**/node_modules/
 .env
 *.log
 .idea/
 .vscode/
 uploads/
+test-uploads/
+dist/
+**/dist/
