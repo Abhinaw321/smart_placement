@@ -104,6 +104,15 @@ function AppContent() {
   } else if (isAdmin) {
     pageTitle = adminTitles[activeTab] || 'Overview';
     pageSubtitle = 'Institutional placement metrics, student records, and company audits';
+    if (activeTab === 'overview' || activeTab === 'reports') {
+      pageAction = {
+        label: 'Export report (CSV)',
+        variant: 'secondary',
+        onClick: () => {
+          window.dispatchEvent(new CustomEvent('tpo:export-csv'));
+        },
+      };
+    }
   }
 
   return (
