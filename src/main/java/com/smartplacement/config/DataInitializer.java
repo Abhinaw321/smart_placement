@@ -63,6 +63,9 @@ public class DataInitializer implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final DataSource dataSource;
 
+    @org.springframework.beans.factory.annotation.Value("${app.seed-demo-data:true}")
+    private boolean seedDemoData;
+
     public DataInitializer(UserRepository userRepository,
                            CompanyRepository companyRepository,
                            RecruiterRepository recruiterRepository,
@@ -95,6 +98,11 @@ public class DataInitializer implements CommandLineRunner {
 
         if (isTestDatabase()) {
             log.debug("Skipping rich demonstration dataset in test database context.");
+            return;
+        }
+
+        if (!seedDemoData) {
+            log.info("Demo data seeding is disabled (app.seed-demo-data=false / SEED_DEMO_DATA=false). Only administrative credentials initialized.");
             return;
         }
 

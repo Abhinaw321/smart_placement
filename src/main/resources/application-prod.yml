@@ -1,0 +1,58 @@
+# ===================================================================
+# Production Profile Configuration (spring.profiles.active=prod)
+# ===================================================================
+# Used when deploying to managed containers/VMs (Render, Railway, AWS, etc.)
+# All sensitive credentials and parameters MUST be passed via environment variables.
+
+server:
+  port: ${PORT:8080}
+
+spring:
+  jpa:
+    hibernate:
+      # DDL AUTO STRATEGY EXPLANATION:
+      # - 'validate' is strictly safer for enterprise production because it only verifies that the
+      #   Java entities match the relational DB schema. It never issues ALTER TABLE or DROP TABLE,
+      #   preventing accidental data loss or blocking schema locks.
+      # - 'update' will auto-create missing tables and columns without dropping existing data.
+      #   For initial deployments on fresh cloud databases (like Railway MySQL or Aiven) where
+      #   tables do not yet exist and Flyway/Liquibase is not configured, 'update' initializes the tables automatically.
+      # Default is 'update' for seamless initial cloud provisioning, configurable via SPRING_JPA_HIBERNATE_DDL_AUTO.
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+# Production Application Settings
+app:
+  jwt:
+    # Notice: In production profile, NO default fallback value is provided.
+    # If JWT_SECRET environment variable is not defined, application fails fast on startup.
+    secret: ${JWT_SECRET:}
+    expiration-ms: ${JWT_EXPIRATION_MS:${JWT_EXPIRATION:86400000}}
+  upload:
+    dir: ${FILE_UPLOAD_DIR:./uploads}
+  cors:
+    # Explicit allowed origins in production (e.g. https://smart-placement.vercel.app)
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:}
+  # Demo data seeding in production is disabled by default to protect clean databases.
+  # Set SEED_DEMO_DATA=true in hosting dashboard if you want sample students/jobs seeded.
+  seed-demo-data: ${SEED_DEMO_DATA:false}
+
+# OpenAPI / Swagger Documentation
+# Disabled by default in production for attack surface reduction.
+# Enable in hosting dashboard with SWAGGER_ENABLED=true.
+springdoc:
+  api-docs:
+    enabled: ${SWAGGER_ENABLED:false}
+  swagger-ui:
+    enabled: ${SWAGGER_ENABLED:false}
+
+# Production Logging: High-signal, low-verbosity
+logging:
+  level:
+    com.smartplacement: INFO
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
+    org.hibernate.type.descriptor.sql.BasicBinder: WARN

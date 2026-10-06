@@ -12,6 +12,18 @@
 
 ---
 
+## 🌐 Live Demo & Deployment Links
+
+| Component | Platform | URL / Endpoint | Status |
+| :--- | :--- | :--- | :--- |
+| **Frontend Application** | Vercel | `https://your-app.vercel.app` *(Live Demo Placeholder)* | 🟢 Production SPA |
+| **Backend REST API** | Render / Railway | `https://your-api.onrender.com` *(Live API Placeholder)* | `GET /actuator/health` |
+| **Interactive API Docs** | Swagger UI | `https://your-api.onrender.com/swagger-ui.html` | OpenAPI 3.0 |
+
+> 📘 **Step-by-Step Cloud Deployment Guide**: Detailed click-by-click instructions are documented in [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).
+
+---
+
 ## 📌 Problem Statement
 
 Every recruitment season, university Training and Placement Offices (TPO) struggle to manage hundreds of corporate drives and thousands of graduating candidates using fragmented spreadsheets and manual email threads. This leads to:

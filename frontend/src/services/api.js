@@ -1,4 +1,9 @@
-const API_BASE = '/api/v1';
+// Base URL from environment variable, falling back to http://localhost:8080 in dev
+const RAW_BASE_URL = import.meta.env.VITE_API_BASE_URL
+  ? import.meta.env.VITE_API_BASE_URL.replace(/\/+$/, '')
+  : (import.meta.env.DEV ? 'http://localhost:8080' : '');
+
+const API_BASE = `${RAW_BASE_URL}/api/v1`;
 
 async function request(endpoint, options = {}) {
   const token = localStorage.getItem('spms_token');

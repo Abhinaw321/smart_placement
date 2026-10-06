@@ -804,3 +804,54 @@
 - Verification output:
   - Remote: `origin https://github.com/Abhinaw321/smart_placement.git (fetch & push)`
   - Status: Up to date with origin/main, clean working tree.
+
+## [Deployment Readiness] Multi-Cloud Configuration, Containerization & Documentation — 2026-10-06 10:57 IST
+- What was done:
+  - Branch created: checked out new branch `feature/deployment`.
+  - Step 1 (Backend Environment Configuration & Hardening):
+    - Updated `application.yml` to dynamically parameterize `PORT`, `DB_URL` / `DB_HOST` / `DB_PORT` / `DB_NAME`, `DB_SSL`, `JWT_SECRET`, `JWT_EXPIRATION`, `CORS_ALLOWED_ORIGINS`, and `FILE_UPLOAD_DIR`.
+    - Added Spring Boot Actuator (`spring-boot-starter-actuator`) in `pom.xml` and restricted exposure strictly to `/actuator/health` for cloud platform health probes.
+    - Created `application-prod.yml` with `show-sql: false`, configurable `ddl-auto: update`, Swagger disabled by default (`SWAGGER_ENABLED=false`), and INFO level logging.
+    - Enhanced `JwtTokenProvider` with strict fail-fast validation: aborts startup with clear exception if `JWT_SECRET` is missing, blank, or retains development placeholder in production profile.
+    - Updated `DataInitializer` to respect `app.seed-demo-data` / `SEED_DEMO_DATA` (disabled in production by default, preserving clean institutional databases).
+  - Step 2 (Dynamic Cross-Origin Resource Sharing - CORS):
+    - Replaced static origins in `WebMvcConfig` and `SecurityConfig` with dynamic parser binding from `CORS_ALLOWED_ORIGINS`.
+    - Configured Spring Security `CorsConfigurationSource` bean allowing credentials, preflight OPTIONS caching, and specified origins with fallback to local development ports.
+  - Step 3 (Containerization & Local Multi-Container Compose):
+    - Authored multi-stage Java 21 `Dockerfile` (JDK jammy build stage -> slim JRE jammy runtime stage) with unprivileged `appuser` (UID 1001), container memory constraints, and dynamic `PORT` binding.
+    - Created duplicate `backend/Dockerfile` and `.dockerignore` for flexible repository-root or subfolder container build context.
+    - Created `frontend/Dockerfile` and `frontend/nginx.conf` with SPA routing fallback for containerized frontend serving.
+    - Authored `docker-compose.yml` for local multi-service testing (MySQL 8.0, Spring Boot backend, and React Nginx frontend).
+    - Updated `.env.example` with comprehensive deployment variable templates (placeholders only).
+  - Step 4 (Frontend Environment Adaptability & SPA Routing):
+    - Parameterized `frontend/src/services/api.js` to derive `API_BASE` from `import.meta.env.VITE_API_BASE_URL` with dev fallback to `http://localhost:8080`.
+    - Created `frontend/.env.example` with `VITE_API_BASE_URL` placeholder.
+    - Added `frontend/vercel.json` and root `vercel.json` with SPA routing rewrites (`/(.*) -> /index.html`) preventing 404s on browser reload.
+    - Verified frontend production build (`npm.cmd run build` passed cleanly in 2.23s).
+  - Step 5 & 7 (Deployment Documentation & Ephemeral Disk Analysis):
+    - Documented ephemeral storage behavior of `LocalFileStorageServiceImpl` on free containers and outlined S3/Cloudflare R2 migration roadmap.
+    - Created `docs/DEPLOYMENT.md` in beginner-friendly Hinglish containing platform comparisons (Render, Railway, Vercel, Aiven), click-by-click instructions, 256-bit JWT key generation, environment variable table, smoke testing checklist, and troubleshooting matrix.
+    - Added "Live Demo & Deployment Links" section to `README.md`.
+  - Step 6 (Local Verification):
+    - Executed backend test suite (`.\mvnw.cmd test`): all 87 tests passed cleanly (0 failures, 0 errors).
+    - Verified Actuator `/actuator/health` exposure and test isolation.
+    - Verified Docker status: Docker engine is not installed on host machine (skipped container execution per prompt instructions).
+- Files created/modified:
+  - `pom.xml` (Modified)
+  - `src/main/resources/application.yml` (Modified)
+  - `src/main/resources/application-prod.yml` (Created)
+  - `src/main/java/com/smartplacement/security/jwt/JwtTokenProvider.java` (Modified)
+  - `src/main/java/com/smartplacement/config/SecurityConfig.java` (Modified)
+  - `src/main/java/com/smartplacement/config/WebMvcConfig.java` (Modified)
+  - `src/main/java/com/smartplacement/config/DataInitializer.java` (Modified)
+  - `Dockerfile` & `backend/Dockerfile` (Created)
+  - `.dockerignore` & `backend/.dockerignore` (Created)
+  - `docker-compose.yml` (Created)
+  - `.env.example` (Modified)
+  - `frontend/src/services/api.js` (Modified)
+  - `frontend/.env.example` (Created)
+  - `frontend/Dockerfile` & `frontend/nginx.conf` (Created)
+  - `frontend/vercel.json` & `vercel.json` (Created)
+  - `docs/DEPLOYMENT.md` (Created)
+  - `README.md` (Modified)
+  - `AGENT_LOG.md` (Appended)

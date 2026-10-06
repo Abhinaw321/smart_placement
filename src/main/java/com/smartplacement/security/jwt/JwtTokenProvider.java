@@ -36,8 +36,33 @@ public class JwtTokenProvider {
     private final SecretKey key;
 
     public JwtTokenProvider(
-            @Value("${app.jwt.secret}") String jwtSecret,
-            @Value("${app.jwt.expiration-ms}") long jwtExpirationMs) {
+            @Value("${app.jwt.secret:}") String jwtSecret,
+            @Value("${app.jwt.expiration-ms:86400000}") long jwtExpirationMs) {
+        this(jwtSecret, jwtExpirationMs, null);
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public JwtTokenProvider(
+            @Value("${app.jwt.secret:}") String jwtSecret,
+            @Value("${app.jwt.expiration-ms:86400000}") long jwtExpirationMs,
+            org.springframework.core.env.Environment environment) {
+        if (jwtSecret == null || jwtSecret.trim().isEmpty()) {
+            throw new IllegalStateException(
+                    "CRITICAL SECURITY CONFIGURATION ERROR: 'JWT_SECRET' (app.jwt.secret) is missing or empty! " +
+                    "The application cannot start without a cryptographically secure signing key. " +
+                    "Please configure the JWT_SECRET environment variable on your hosting platform."
+            );
+        }
+
+        if (environment != null && java.util.Arrays.asList(environment.getActiveProfiles()).contains("prod")) {
+            if (jwtSecret.contains("placeholder") || jwtSecret.getBytes(StandardCharsets.UTF_8).length < 32) {
+                throw new IllegalStateException(
+                        "CRITICAL SECURITY CONFIGURATION ERROR: In 'prod' profile, 'JWT_SECRET' cannot use dev placeholders " +
+                        "and must be at least 256 bits (32 bytes). Please supply a secure, randomly generated JWT_SECRET in production."
+                );
+            }
+        }
+
         this.jwtExpirationMs = jwtExpirationMs;
         this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
     }
